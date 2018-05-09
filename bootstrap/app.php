@@ -26,6 +26,7 @@ $app = new App\Application(
 $app->configure('database');
 $app->configure('custom');
 $app->configure('cache');
+$app->configure('jwt');
 
 
 $app->withFacades();    // Facades 提供一个静态接口给在应用程序的服务容器中可以取用的类
