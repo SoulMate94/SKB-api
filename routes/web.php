@@ -12,5 +12,5 @@
 */
 
 $app->get('/version', function () use ($app) {
-    return $app->version();
+    return 'Hello world';
 });
