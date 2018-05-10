@@ -13,4 +13,5 @@
 
 $app->get('/version', function () use ($app) {
     phpinfo();
+    return 'this is wechat ~~~~';
 });
