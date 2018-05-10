@@ -111,7 +111,7 @@ $app->register(Illuminate\Redis\RedisServiceProvider::class);
 $app->router->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     require __DIR__.'/../routes/web.php';
     require __DIR__.'/../routes/api.php';  // by caoxl
-    require __DIR__.'/../routes/master.php';  // by caoxl
+    require __DIR__ . '/../routes/master.php';  // by caoxl
     require __DIR__.'/../routes/user.php';  // by caoxl
     require __DIR__.'/../routes/common.php';  // by caoxl
 });
