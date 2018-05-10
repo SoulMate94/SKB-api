@@ -15,3 +15,5 @@ $app->get('/version', function () use ($app) {
     phpinfo();
     return 'this is wechat !!';
 });
+$app->get('auth/login', 'AuthController@redirectToProvider');
+$app->get('auth/login/callback', 'AuthController@handleProviderCallback');
