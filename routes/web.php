@@ -12,5 +12,5 @@
 */
 
 $app->get('/version', function () use ($app) {
-    return 'test';
+    phpinfo();
 });
