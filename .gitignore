@@ -6,10 +6,6 @@ Homestead.yaml
 .env
 composer.lock
 
-
-config/*
-!config/*.sample.php
-
 storage/*
 storage/app/*
 storage/framework/*
