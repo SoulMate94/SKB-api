@@ -27,6 +27,7 @@ $app->configure('database');
 $app->configure('custom');
 $app->configure('cache');
 $app->configure('jwt');
+$app->configure('services');// by jizw
 
 
 $app->withFacades();    // Facades 提供一个静态接口给在应用程序的服务容器中可以取用的类
@@ -94,6 +95,8 @@ $app->register(App\Providers\AuthServiceProvider::class);
 
 // redis
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
+//Socialite
+$app->register(Laravel\Socialite\SocialiteServiceProvider::class);
 
 
 /*
