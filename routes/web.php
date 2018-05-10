@@ -12,5 +12,5 @@
 */
 
 $app->get('/version', function () use ($app) {
-    return 'this is wechatbfgverg wr';
+    return 'this is wechatbfgverg wrfgvwerfgreger';
 });
