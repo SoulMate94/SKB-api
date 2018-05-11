@@ -27,6 +27,7 @@ $app->configure('database');
 $app->configure('custom');
 $app->configure('cache');
 $app->configure('jwt');
+$app->configure('services');
 
 
 $app->withFacades();    // Facades 提供一个静态接口给在应用程序的服务容器中可以取用的类
@@ -106,7 +107,7 @@ $app->register(Illuminate\Redis\RedisServiceProvider::class);
 | can respond to, as well as the controllers that may handle them.
 |
 */
-
+//require_once __DIR__.'/../vendor/qcloud/weapp-sdk/AutoLoader.php';
 
 $app->router->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     require __DIR__.'/../routes/web.php';

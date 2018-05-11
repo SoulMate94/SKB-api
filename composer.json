@@ -6,11 +6,12 @@
     "type": "project",
     "require": {
         "php": ">=7.1.3",
-        "laravel/lumen-framework": "5.5.*",
-        "illuminate/redis": "5.5.*",
-        "predis/predis": "^1.1",
-        "tymon/jwt-auth": "1.0.0-rc.1",
         "firebase/php-jwt": "^5.0",
+        "illuminate/redis": "5.5.*",
+        "laravel/lumen-framework": "5.5.*",
+        "predis/predis": "^1.1",
+        "qcloud/weapp-sdk": "^2.1",
+        "tymon/jwt-auth": "1.0.0-rc.1",
         "vlucas/phpdotenv": "~2.2"
     },
     "require-dev": {

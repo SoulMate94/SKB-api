@@ -17,7 +17,8 @@ $app->get('/test_jwt', function () use ($app) {
     return config('jwt');
 });
 
-
+$app->get('weapp/user','User\SkbUser@index');
+$app->get('weapp/login','User\SkbUser@login');
 
 $app->group([
 
