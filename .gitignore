@@ -4,7 +4,11 @@ Homestead.json
 Homestead.yaml
 
 .env
-composer.lock
+composer.json
+
+
+config/*
+!config/*.sample.php
 
 storage/*
 storage/app/*
