@@ -23,7 +23,7 @@ return [
             'fileBucket'   => 'wafer',
             'uploadFolder' => ''
         ],
-        // 微信登录态有效期
+        // 微信登录态
         'wxLoginExpires' => 7200,
         'wxMessageToken' => 'abcdefgh'
     ]
