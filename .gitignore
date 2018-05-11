@@ -7,8 +7,6 @@ Homestead.yaml
 composer.json
 
 
-config/*
-!config/*.sample.php
 
 storage/*
 storage/app/*
