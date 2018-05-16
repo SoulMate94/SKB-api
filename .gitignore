@@ -6,7 +6,6 @@ Homestead.yaml
 .env
 composer.json
 
-
 config/*
 !config/*.sample.php
 
