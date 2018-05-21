@@ -5,7 +5,7 @@ Homestead.yaml
 
 .env
 composer.json
-
+composer.lock
 
 config/*
 !config/*.sample.php
