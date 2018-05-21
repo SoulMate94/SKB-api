@@ -48,7 +48,7 @@ class SkbUser extends Controller
                 ]);
             }
 
-            //注册用户 //by jizw
+            //注册用户 by jizw
             $user = ['username'  =>  '',
                 'openid'    =>  $result['userinfo']['userinfo']->openId,
                 'nickname'  =>  $result['userinfo']['userinfo']->nickName,
