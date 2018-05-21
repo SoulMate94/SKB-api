@@ -107,6 +107,7 @@ $app->register(Illuminate\Redis\RedisServiceProvider::class);
 | can respond to, as well as the controllers that may handle them.
 |
 */
+
 //require_once __DIR__.'/../vendor/qcloud/weapp-sdk/AutoLoader.php';
 
 $app->router->group(['namespace' => 'App\Http\Controllers'], function ($app) {
