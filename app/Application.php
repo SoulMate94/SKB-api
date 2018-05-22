@@ -12,8 +12,12 @@ use Monolog\Logger;
 
 class Application extends LumenBase
 {
-    // Rewrite log handler
-    // 自定义日志文件名
+    /**
+     * Rewrite log handler
+     * 自定义日志文件名
+     * @return $this|\Monolog\Handler\AbstractHandler|\Monolog\Handler\HandlerInterface
+     * @throws \Exception
+     */
     protected function getMonologHandler()
     {
         return (
