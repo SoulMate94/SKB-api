@@ -28,6 +28,7 @@ $app->configure('custom');
 $app->configure('cache');
 $app->configure('jwt');
 $app->configure('services');
+//$app->configure('filesystems');
 
 
 $app->withFacades();    // Facades 提供一个静态接口给在应用程序的服务容器中可以取用的类
@@ -54,6 +55,8 @@ $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
     App\Console\Kernel::class
 );
+
+$app->singleton( Illuminate\Contracts\Filesystem\Factory::class, function ($app) { return new Illuminate\Filesystem\FilesystemManager($app); } );
 
 /*
 |--------------------------------------------------------------------------

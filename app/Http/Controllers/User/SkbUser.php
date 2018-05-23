@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Traits\Tool;
 use App\Models\User\SkbUsersModel as SkbUsers;
-use QCloud_WeApp_SDK\Conf as Config;
-use QCloud_WeApp_SDK\Auth\LoginService as LoginService;
-use QCloud_WeApp_SDK\Constants as Constants;
+
+use App\Traits\Tool,
+    App\Traits\Session as Session;
+
+use Illuminate\Http\Request;
+use QCloud_WeApp_SDK\Conf as Config,
+    QCloud_WeApp_SDK\Auth\LoginService as LoginService,
+    QCloud_WeApp_SDK\Constants as Constants;
 
 class SkbUser extends Controller
 {
@@ -16,7 +20,8 @@ class SkbUser extends Controller
         Config::setup(config('services.wechat'));
     }
 
-    public function index() {
+    public function index()
+    {
         $result = LoginService::check();
 
         if ($result['loginState'] === Constants::S_AUTH) {
@@ -32,7 +37,8 @@ class SkbUser extends Controller
         }
     }
 
-    public function login() {
+    public function login(Session $ssn)
+    {
         $result = LoginService::login();
 
         if ($result['loginState'] === Constants::S_AUTH) {
@@ -42,6 +48,8 @@ class SkbUser extends Controller
             $user   = $users->where('openid','=',$result['userinfo']['userinfo']->openId)->first();
 
             if($user){
+                $ssn->set('user' , $user);
+
                 return Tool::jsonResp([
                     'err' => 0,
                     'dat' => $user
@@ -49,22 +57,55 @@ class SkbUser extends Controller
             }
 
             //注册用户 by jizw
-            $user = ['username'  =>  '',
-                'openid'    =>  $result['userinfo']['userinfo']->openId,
-                'nickname'  =>  $result['userinfo']['userinfo']->nickName,
-                'avatar'    =>  $result['userinfo']['userinfo']->avatarUrl,
-                'created_at'=>  date('Y-m-d H:i:s'),
-                'updated_at'=>  date('Y-m-d H:i:s')];
-            $users->insert($user);
+            $user = [
+                'username'      =>  '',
+                'openid'        =>  $result['userinfo']['userinfo']->openId,
+                'nickname'      =>  $result['userinfo']['userinfo']->nickName,
+                'avatar'        =>  $result['userinfo']['userinfo']->avatarUrl,
+                'created_at'    =>  date('Y-m-d H:i:s'),
+                'updated_at'    =>  date('Y-m-d H:i:s')
+            ];
+
+            $user[] = ['id' => $users->insertGetId($user)];
+
+            if (!$user['id']) return Tool::jsonResp([
+                'err' => -1,
+                'msg' => '服务器开小差了,请稍后再试'
+            ]);
+
+            $ssn->set('user',$user);
 
             return Tool::jsonResp([
                 'err' => 0,
                 'dat' => $user
             ]);
         }
+
+        return Tool::jsonResp([
+            'err' => -1,
+            'msg' => $result['error']
+        ]);
+    }
+
+    public function testLogin(Request $req, Session $ssn)
+    {
+        $users  = new SkbUsers();
+        $params = $req->post('id');
+
+        $user   = $users->where('id', $params)->first();
+
+        if($user){
+            $ssn->set('user',$user);
+
             return Tool::jsonResp([
-                'err' => -1,
-                'msg' => $result['error']
+                'err' => 0,
+                'dat' => $user
             ]);
+        }
+
+        return Tool::jsonResp([
+            'err'   =>  -1,
+            'dat'   =>  'you 挂了!!!!'
+        ]);
     }
 }
