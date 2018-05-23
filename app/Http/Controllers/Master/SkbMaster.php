@@ -3,12 +3,29 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Traits\Session,
+    App\Traits\Tool;
+use App\Models\Master\SkbMaster as SkbMasterModel;
 
 class SkbMaster extends Controller
 {
-    public function masterInfo()
+    public function getMasterInfo(Session $ssn)
     {
-        return 'master info';
+        $master_id = $ssn->get('id');
+
+        if ($master_id && is_int($master_id)) {
+            $dat = SkbMasterModel::where('mid', $master_id)->first();
+        }
+
+        $dat = $dat ?? [];
+        $err = $dat ? 0 : 404;
+        $msg = $dat ? 'success' : 'fail';
+
+        return Tool::jsonResp([
+            'err' => $err,
+            'msg' => $msg,
+            'dat' => $dat
+        ]);
     }
 
     public function updateMasterInfo($masterId)

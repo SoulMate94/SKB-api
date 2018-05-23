@@ -1,7 +1,7 @@
 <?php
 
 // Simple Session management
-//  @caoxl
+// @caoxl
 
 namespace App\Traits;
 

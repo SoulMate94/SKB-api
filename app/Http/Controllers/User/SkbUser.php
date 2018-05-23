@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+
+use App\Traits\{Tool, Session};
 use App\Models\User\SkbUsersModel as SkbUsers;
-
-use App\Traits\Tool,
-    App\Traits\Session as Session;
-
 use Illuminate\Http\Request;
 use QCloud_WeApp_SDK\Conf as Config,
     QCloud_WeApp_SDK\Auth\LoginService as LoginService,
@@ -18,6 +16,27 @@ class SkbUser extends Controller
     public function __construct()
     {
         Config::setup(config('services.wechat'));
+    }
+
+
+
+    public function getUserInfo(Session $ssn)
+    {
+        $user_id = $ssn->get('id');
+
+        if ($user_id && is_int($user_id)) {
+            $dat = SkbUsers::find($user_id);
+        }
+
+        $dat = $dat ?? [];
+        $err = $dat ? 0 : 404;
+        $msg = $dat ? 'success' : 'fail';
+
+        return Tool::jsonResp([
+            'err' => $err,
+            'msg' => $msg,
+            'dat' => $dat
+        ]);
     }
 
     public function index()
