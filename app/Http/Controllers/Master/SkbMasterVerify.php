@@ -115,7 +115,7 @@ class SkbMasterVerify extends Controller
 
     public function masterVerifyFile(Request $req)
     {
-        if(!$req->file('id_card_img')->isValid()) {
+        if(!$req->hasFile('id_card_img')) {
             return false;
         }
         $file = $req->file('id_card_img');
