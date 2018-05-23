@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Traits\Tool,
-    App\Traits\Session;
+use App\Traits\{Tool, Session};
 use App\Models\User\SkbUsersModel as SkbUsers;
 use QCloud_WeApp_SDK\Conf as Config;
 use QCloud_WeApp_SDK\Auth\LoginService as LoginService;

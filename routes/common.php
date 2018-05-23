@@ -12,4 +12,10 @@ $app->group([
 
     // 产品类别
     $app->get('get_product_cate_list', 'SkbProductCate@getProductCateList');
+
+    // 地址相关
+    $app->get('get_address', 'SkbAddress@getAddress');
+    $app->post('create_or_update_address', 'SkbAddress@createOrUpdateAddress');
+    $app->post('del_once_address', 'SkbAddress@delOnceAddress');
+    $app->post('del_all_address', 'SkbAddress@delAllAddress');
 });
