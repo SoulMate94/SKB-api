@@ -93,7 +93,7 @@ class SkbMasterVerify extends Controller
         }
 
         $params['mid']          =   $ssn->get('user')['id'];
-        $params['id_card_img']  =   $this->masterVerifyFile();
+        $params['id_card_img']  =   $this->masterVerifyFile($req);
         $params['verify_status']=   1;
         $params['created_at']   =   date('Y-m-d H:i:s');
         $params['updated_at']   =   date('Y-m-d H:i:s');
