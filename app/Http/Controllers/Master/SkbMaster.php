@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
-use App\Traits\Session,
-    App\Traits\Tool;
+use App\Traits\{Tool, Session};
 use App\Models\Master\SkbMaster as SkbMasterModel;
 
 class SkbMaster extends Controller

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-
 use App\Traits\{Tool, Session};
 use App\Models\User\SkbUsersModel as SkbUsers;
 use Illuminate\Http\Request;
@@ -17,8 +16,6 @@ class SkbUser extends Controller
     {
         Config::setup(config('services.wechat'));
     }
-
-
 
     public function getUserInfo(Session $ssn)
     {
