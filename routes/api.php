@@ -21,6 +21,16 @@ $app->get('weapp/user','User\SkbUser@index');
 $app->get('weapp/login','User\SkbUser@login');
 
 $app->group([
+    'prefix'=>'test'
+], function ($app) {
+
+    $app->post('login', 'User\SkbUser@testLogin');
+    $app->post('verify', 'Master\SkbMasterVerify@masterVerify');
+    $app->post('file', 'Master\SkbMasterVerify@masterVerifyFile');
+    $app->post('list', 'Master\SkbMasterVerify@verifyList');
+});
+
+$app->group([
 
     'prefix' => 'auth'
 
