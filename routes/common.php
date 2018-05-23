@@ -9,4 +9,7 @@ $app->group([
 
     // 意见反馈
     $app->post('submit_suggest', 'SkbSuggestions@submitSuggestion');
+
+    // 产品类别
+    $app->get('get_product_cate_list', 'SkbProductCate@getProductCateList');
 });
