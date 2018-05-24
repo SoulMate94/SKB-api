@@ -197,7 +197,7 @@ class SkbMasterVerify extends Controller
         foreach ($file as $k => $value){
             $fileName = 'skb_'.time().rand(1000, 9999).'.'.$value->getClientOriginalExtension();
             $folder   = 'masterVerify/'.date('Ymd');
-            if($value->move('../../merge/public/uploads/'.$folder, $fileName)){
+            if($value->move(env('UPLOAD_FILES').$folder, $fileName)){
                 $path[$k] = $folder.'/'.$fileName;
             }
         }
