@@ -27,7 +27,8 @@ $app->group([
     $app->post('login', 'User\SkbUser@testLogin');
     $app->post('verify', 'Master\SkbMasterVerify@masterVerify');
     $app->post('file', 'Master\SkbMasterVerify@masterVerifyFile');
-    $app->post('list', 'Master\SkbMasterVerify@verifyList');
+    $app->post('index', 'Master\SkbMasterVerify@index');
+    $app->post('edit', 'Master\SkbMasterVerify@verifyListEdit');
 });
 
 $app->group([

@@ -13,25 +13,13 @@ use Illuminate\Http\Request,
 class SkbMasterVerify extends Controller
 {
 
-    public function index()
+    public function index(Session $ssn, masterVerify $verify)
     {
 
-    }
+        $master_id = $ssn->get('user')['id'];
 
-    /**
-     * 师傅认证
-     * @param Request $req
-     * @return $this
-     */
-    public function verifyList(Request $req, masterVerify $verify)
-    {
-        $this->validate($req, [
-            'master_id' => 'required|numeric',
-        ]);
+        $dat = $verify->select('verify_status','failure_reason')->where('mid',$master_id)->first();
 
-        $master_id = $req->get('master_id');
-
-        $dat = $verify->select('verify_status','failure_reason')->where('id',$master_id)->first();
         if ($dat['verify_status'] === 2) {
             return Tool::jsonResp([
                 'err' => 0,
@@ -53,7 +41,96 @@ class SkbMasterVerify extends Controller
             'msg' => $dat['failure_reason'],
             'dat' => $dat,
         ]);
+    }
 
+    /**
+     * 师傅认证
+     * @param Request $req
+     * @return $this
+     */
+    public function verifyList(Session $ssn, masterVerify $verify)
+    {
+        $master_id = $ssn->get('user')['id'];
+
+        $select    = [
+            'id_number',
+            'id_card_img',
+            'work_area',
+            'product_type_id',
+            'service_type_id',
+            'service_sta_time',
+            'service_end_time',
+            'failure_reason',
+            'created_at'
+        ];
+        $dat       = $verify->select($select)
+                            ->where('mid',$master_id)
+                            ->first();
+
+        if(!$dat) {
+            return Tool::jsonResp([
+                'err' => -1,
+                'msg' => '没有提交认证',
+                'dat' => null
+            ]);
+        }
+
+        $dat['created_at'] = strtotime($dat['created_at']);
+
+        return Tool::jsonResp([
+            'err' => 0,
+            'msg' => 'success',
+            'dat' => $dat
+        ]);
+    }
+
+    public function verifyListEdit(Session $ssn, Request $req, masterVerify $verify)
+    {
+        $params = $req->all();
+
+        $rules  =  [
+            'username'         =>  'required|string',
+            'id_number'         =>  [
+                'required',
+                'regex:/(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/',
+            ],
+            'mobile'            =>  [
+                'required',
+                'regex:/0?(13|14|15|17|18|19)[0-9]{9}/'
+            ],
+            'work_year'         =>  'required|numeric',
+            'work_area'         =>  'required|array',
+            'product_type_id'   =>  'required|array',
+            'service_type_id'   =>  'required|array',
+            'service_sta_time'  =>  'required|numeric',
+            'service_end_time'  =>  'required|numeric',
+        ];
+
+        if ($msg = $this->check($params, $rules)) {
+            return Tool::jsonResp([
+                'err' => '403',
+                'msg' => $msg,
+            ]);
+        }
+
+        $params['mid']              =   $ssn->get('user')['id'];
+        if (isset($params['id_card_img'])) {
+            $params['id_card_img']  =   $this->masterVerifyFile($req);
+        }
+
+        $dat = $verify->updateVerify($params);
+
+        if ($dat) {
+            return Tool::jsonResp([
+                'err' => 0,
+                'msg' => '申请修改成功'
+            ]);
+        } else {
+            return Tool::jsonResp([
+                'err' => '404',
+                'msg' => '申请修改失败'
+            ]);
+        }
     }
 
     /**
@@ -94,9 +171,6 @@ class SkbMasterVerify extends Controller
 
         $params['mid']          =   $ssn->get('user')['id'];
         $params['id_card_img']  =   $this->masterVerifyFile($req);
-        $params['verify_status']=   1;
-        $params['created_at']   =   date('Y-m-d H:i:s');
-        $params['updated_at']   =   date('Y-m-d H:i:s');
 
         $dat = $verify->insertVerify($params);
 
