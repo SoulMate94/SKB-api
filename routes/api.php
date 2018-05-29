@@ -12,7 +12,6 @@ $app->get('redis', 'TestController@redis');
 $app->get('queue', 'TestController@queue');
 $app->get('jwt', 'TestController@jwt');
 $app->get('checkJwt', 'TestController@checkJwt');
-
 $app->get('/test_jwt', function () use ($app) {
     return config('jwt');
 });
