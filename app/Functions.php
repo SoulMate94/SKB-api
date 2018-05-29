@@ -252,14 +252,12 @@ if (! fe('seconds_left_today')) {
 }
 
 if (! fe('trade_no')) {
-    function trade_no(int $mid = 0, int $env = 0)
+    function trade_no()
     {
-        $env     = str_pad(($env % 10), 2, '0', STR_PAD_LEFT);
-        $mid     = str_pad(($mid % 10), 2, '0', STR_PAD_LEFT);
         $rand    = str_pad(mt_rand(0, 99), 2, '0', STR_PAD_LEFT);
         $postfix = mb_substr(microtime(), 2, 6);
 
-        return date('ymdHis').$env.$mid.$rand.$postfix;
+        return date('ymdHis').$rand.$postfix;
     }
 }
 
