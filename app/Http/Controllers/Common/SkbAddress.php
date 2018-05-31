@@ -61,7 +61,8 @@ class SkbAddress extends Controller
             'area' => 'required|string',
             'addr' => 'required|string',
             'tag'  => 'required|numeric',
-            'is_default' => 'required|numeric'
+            'is_default' => 'required|numeric',
+            'area_id'    => 'required|numeric'
         ]);
 
         $params = $req->all();
