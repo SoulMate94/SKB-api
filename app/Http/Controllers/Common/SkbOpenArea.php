@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
-use App\Models\Common\SkbArea as SkbAreaModel;
 use App\Models\Common\SkbOpenArea as SkbOpenAreaModel;
 use App\Traits\Tool;
 use Illuminate\Http\Request;
