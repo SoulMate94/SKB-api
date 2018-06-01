@@ -8,6 +8,11 @@ use App\Models\Master\SkbMaster as SkbMasterModel;
 
 class SkbMaster extends Controller
 {
+    /**
+     * 获取师傅信息
+     * @param Session $ssn
+     * @return $this
+     */
     public function getMasterInfo(Session $ssn)
     {
         $master_id = $ssn->get('id');

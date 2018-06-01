@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class SkbOpenArea extends Controller
 {
+    /**
+     * 获取省
+     * @return $this
+     */
     public function getOpenAreaProvince()
     {
         $model = new SkbOpenAreaModel;
@@ -21,6 +25,11 @@ class SkbOpenArea extends Controller
         ]);
     }
 
+    /**
+     * 根据省获得市
+     * @param Request $req
+     * @return $this
+     */
     public function getOpenAreaCity(Request $req)
     {
         $this->validate($req, [
@@ -39,6 +48,11 @@ class SkbOpenArea extends Controller
         ]);
     }
 
+    /**
+     * 根据市获得区
+     * @param Request $req
+     * @return $this
+     */
     public function getOpenAreaDistrict(Request $req)
     {
         $this->validate($req, [

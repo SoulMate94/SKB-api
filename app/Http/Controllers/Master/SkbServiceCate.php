@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\DB;
 
 class SkbServiceCate extends Controller
 {
+    /**
+     * 获取服务类别
+     * @return $this
+     */
     public function getServiceCateList()
     {
         $dat = DB::table('skb_service_cate')

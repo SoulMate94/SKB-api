@@ -14,6 +14,11 @@ class SkbProduct extends Controller
         // TODO
     }
 
+    /**
+     * 通过产品分类ID获取产品
+     * @param Request $req
+     * @return $this
+     */
     public function getProductByCateId(Request $req)
     {
         $this->validate($req, [
@@ -35,7 +40,5 @@ class SkbProduct extends Controller
             'msg' => $msg,
             'dat' => $dat,
         ]);
-
-
     }
 }

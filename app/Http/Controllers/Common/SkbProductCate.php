@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\DB;
 
 class SkbProductCate extends Controller
 {
+    /**
+     * 获取产品类别
+     * @return $this
+     */
     public function getProductCateList()
     {
         $dat = DB::table('skb_product_cate')
