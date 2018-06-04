@@ -24,7 +24,7 @@ class Session
         return $_SESSION[$key] ?? false;
     }
 
-    public function destory()
+    public function destroy()
     {
         session_destroy();
         setcookie('PHPSESSID', '', time()-1);
