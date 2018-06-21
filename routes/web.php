@@ -14,3 +14,5 @@
 $app->get('/version', function () use ($app) {
     return $app->version();
 });
+
+$app->get('/pay', 'Orders\WechatPay@connect');
