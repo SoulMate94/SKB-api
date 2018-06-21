@@ -29,11 +29,7 @@ class SkbUser extends Controller
         $err = $dat ? 0 : 404;
         $msg = $dat ? 'success' : 'fail';
 
-        return Tool::jsonResp([
-            'err' => $err,
-            'msg' => $msg,
-            'dat' => $dat
-        ]);
+        return Tool::jr($err, $msg, $dat);
     }
 
     public function index()
@@ -108,7 +104,8 @@ class SkbUser extends Controller
         $users  = new SkbUsers();
         $params = $req->post('id');
 
-        $user   = $users->where('id', $params)->first();
+        $user   = $users->where('id', $params)
+                        ->first()->toArray();
 
         if($user){
             $ssn->set('user',$user);

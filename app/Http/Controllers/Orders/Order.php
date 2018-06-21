@@ -3,33 +3,139 @@
 namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
-use App\Models\Orders\Order as OrderModel;
+use App\Models\{
+    Common\SkbProduct,
+    Orders\Order as OrderModel,
+    Master\Verify
+};
+use App\Traits\Session;
 use App\Traits\Tool;
+use Illuminate\Http\Request;
 
 class Order extends Controller
 {
     /**
      * 下单;用户端
      */
-    public function createOrder()
+    public function createOrder(Request $request, Session $ssn, OrderModel $order)
     {
-        // TODO
+        $res = $request->all();
+        $this->validate($request,[
+            'uid'          => 'required|numeric',
+            'product_info' => 'required|array',
+            'end_addr'     => 'required|numeric',
+            'total_price'  => 'required|numeric',
+            'appoint_time' => 'required|numeric',
+            'service_id'   => 'required|array'
+        ]);
+
+        if ($ssn->get('user')['id'] != $res['uid']) {
+            return $this->jsonRes(-2, 'uid error', '');
+        }
+
+        //验证价格的正确性
+        $price_tmp = [];
+        foreach ($res['product_info'] as $v) {
+            $price_tmp[] = $v['product_id'];
+        }
+        $prices = SkbProduct::select('product_price')->whereIn('id',$price_tmp);
+        foreach ($prices as $v) {
+            $price_tmp += $v['product_price'];
+        }
+        //检测价格是否正常
+        if ($price_tmp != $v['total_price']) {
+            return $this->jsonRes(-3, 'price error', '');
+        }
+
+        $res['product_info']    = json_encode($res['product_info']);
+        $res['order_number']    = trade_no();
+
+        $res = $order->createOrder($res);
+
+        if ($res) {
+            return $this->jsonRes( 0, 'create success', $res);
+        }
+
+        return $this->jsonRes( -1, '服务器目前有些繁忙,请稍后再试', '');
     }
 
     /**
      * 取消订单;用户端,师傅端
      */
-    public function cancelOrder()
+    public function cancelOrder(Request $request, Session $ssn, OrderModel $order)
     {
-        // TODO
+        $this->validate($request,[
+            'uid'          => 'required|numeric',
+            'order_number' => 'required',
+        ]);
+        $res = $request->all();
+        if ($res['uid'] == $ssn->get('user')['id']) {
+            $result = $order->cancel($res);
+            switch ($result) {
+                case 0 :
+                    return $this->jsonRes(0, 'cancel order success', '');
+                case -1 :
+                    return $this->jsonRes(-2, 'order_number error', $res['order_number']);
+                case -2 :
+                    return $this->jsonRes( -3, '服务器异常', '');
+                case -3 :
+                    return $this->jsonRes( -4, '该订单状态不可修改', '');
+            }
+        }
+        return $this->jsonRes(-1, '用户信息异常', $res['uid']);
     }
 
     /**
      * 撤销订单;用户端,师傅端
      */
-    public function revokeOrder()
+    public function revokeOrder(Request $request, Session $ssn, OrderModel $order)
     {
-        // TODO
+        $this->validate($request,[
+            'uid'          => 'numeric',
+            'order_number' => 'required',
+        ]);
+        $res = $request->all();
+        $usr = $ssn->get('user');
+        switch ($usr['role']) {
+            case 1 :
+                //用户撤单 费用扣除部分还处于 TODO
+                if ($res['uid']&&$res['uid'] == $usr['id']) {
+                    $result = $order->userRevokeOrder($res);
+                    switch ($result) {
+                        case 0 :
+                            return Tool::jr(0, '用户撤单成功', '');
+                        case 1 :
+                            return Tool::jr(1, '用户撤单成功,已扣除相关费用', '');
+                        case -2 :
+                            return  Tool::jr(-2, '订单编号异常', $res['order_number']);
+                        case -3 :
+                            return Tool::jr(-3, '服务器异常', $res['order_number']);
+                        case -4 :
+                            return Tool::jr(-4, '该订单状态不可进行这种操作', '');
+                    }
+                }
+                return Tool::jr(-1, '用户信息异常', $res['uid']);
+            case 2 :
+                //师傅撤单 费用扣除部分还处于 TODO
+                if ($res['mid']&&$res['mid'] == $usr['id']) {
+                    $result = $order->masterRevokeOrder($res);
+                    switch ($result) {
+                        case 0 :
+                            return Tool::jr(0, '师傅撤单成功', '');
+                        case 1 :
+                            return Tool::jr(1, '师傅撤单成功,已扣除相关费用', '');
+                        case -2 :
+                            return  Tool::jr(-2, '订单编号异常', $res['order_number']);
+                        case -3 :
+                            return Tool::jr(-3, '服务器异常', $res['order_number']);
+                        case -4 :
+                            return Tool::jr(-4, '该订单状态不可进行这种操作', '');
+                    }
+                }
+                return Tool::jr(-1, '师傅信息异常', $res['mid']);
+            default :
+                return Tool::jr(-10, '用户状态异常', '');
+        }
     }
 
     /**
@@ -41,9 +147,35 @@ class Order extends Controller
     }
 
     /**
+     * 订单列表;师傅端
+     */
+    public function orderList( Session $ssn, OrderModel $order, Verify $verify)
+    {
+        $usr = $ssn->get('user');
+        if ($usr['role'] != 2) return Tool::jr(-9, '这个操作只有师傅才可以进行', '');
+
+        $masterArea = json_decode($verify->select('work_area')
+                                         ->where([
+                                             ['mid', $usr['id']],
+                                             ['verify_status', 2],
+                                             ['is_del', 0]
+                                         ])->first()['work_area'], true);
+
+        $res = $order->where([
+            ['order_status',0],
+            ['appoint_time','>',time()],
+        ])->whereIn('end_addr',$masterArea)
+          ->get()->toArray();
+        if ($res) {
+            return Tool::jr(0, 'get order list success', $res);
+        }
+        return Tool::jr(1, '目前还没有合适的订单', $res);
+    }
+
+    /**
      * 接单;师傅端
      */
-    public function receiveOrder()
+    public function receiveOrder(Request $request, Session $ssn, OrderModel $order)
     {
         // TODO
     }
@@ -65,7 +197,7 @@ class Order extends Controller
         int $status   = 1,
         int $page     = 1
     ){
-        if (!in_array($status, [1,2,3,4])) {
+        if (!in_array($status, [-1,0,1,2,3,8,-8])) {
             return Tool::jsonResp([
                 'err' => 500,
                 'msg' => '订单的状态不正常'
@@ -114,13 +246,9 @@ class Order extends Controller
                     'order_id', 'order_status'
                 ]);
 
-        return Tool::jsonResp([
-            'err' => 0,
-            'msg' => '获取订单列表成功',
-            'dat' => [
-                'items'      => $data,
-                'total_cont' => 500
-            ]
+        return Tool::jr(0, '获取订单列表成功', [
+            'items'         =>  $data,
+            'total_cont'    => 500
         ]);
     }
 
@@ -131,6 +259,15 @@ class Order extends Controller
     public function logOrder()
     {
         // TODO
+    }
+
+    private function jsonRes($err, $msg, $dat)
+    {
+        return Tool::jsonResp([
+            'err' => $err,
+            'msg' => $msg,
+            'dat' => $dat
+        ]);
     }
 
 }

@@ -119,4 +119,23 @@ class Tool
             ->header('Content-Type', 'application/json; charset=utf-8');
     }
 
+    public static function jr(
+        $err,
+        $msg,
+        $dat,
+        int $status = 200,
+        bool $unicode = true
+    ) {
+        $unicode = $unicode ? JSON_UNESCAPED_UNICODE : null;
+
+        $data = json_encode([
+            'err' => $err,
+            'msg' => $msg,
+            'dat' => $dat
+        ], $unicode);
+
+        return response($data)
+            ->header('Content-Type', 'application/json; charset=utf-8');
+    }
+
 }

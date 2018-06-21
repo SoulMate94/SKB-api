@@ -24,10 +24,14 @@ $app->group([
 ], function ($app) {
 
     $app->post('login', 'User\SkbUser@testLogin');
-    $app->post('verify', 'Master\SkbMasterVerify@masterVerify');
-    $app->post('file', 'Master\SkbMasterVerify@masterVerifyFile');
-    $app->post('index', 'Master\SkbMasterVerify@index');
-    $app->post('edit', 'Master\SkbMasterVerify@verifyListEdit');
+    $app->post('create', 'Orders\Order@createOrder');
+    $app->post('list', 'Orders\Order@orderList');
+});
+
+$app->group([
+    'prefix' => 'order'
+], function ($app) {
+
 });
 
 $app->group([
