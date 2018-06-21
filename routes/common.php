@@ -22,4 +22,9 @@ $app->group([
     $app->post('create_or_update_address', 'SkbAddress@createOrUpdateAddress'); // by caoxl
     $app->post('del_once_address', 'SkbAddress@delOnceAddress');  // by caoxl
     $app->post('del_all_address', 'SkbAddress@delAllAddress');  // by caoxl
+
+    // 地址区域
+    $app->get('get_open_area_province', 'SkbOpenArea@getOpenAreaProvince'); // by caoxl
+    $app->get('get_open_area_city', 'SkbOpenArea@getOpenAreaCity'); // by caoxl
+    $app->get('get_open_area_district', 'SkbOpenArea@getOpenAreaDistrict'); // by caoxl
 });

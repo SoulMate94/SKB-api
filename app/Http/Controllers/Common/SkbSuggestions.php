@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class SkbSuggestions extends Controller
 {
+    /**
+     * 提交意见反馈
+     * @param Request $req
+     * @return $this
+     */
     public function submitSuggestion(Request $req)
     {
         $this->validate($req, [

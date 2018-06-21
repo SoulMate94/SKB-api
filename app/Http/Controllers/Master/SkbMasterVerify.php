@@ -63,9 +63,9 @@ class SkbMasterVerify extends Controller
             'failure_reason',
             'created_at'
         ];
-        $dat       = $verify->select($select)
-                            ->where('mid',$master_id)
-                            ->first();
+        $dat = $verify->select($select)
+                ->where('mid',$master_id)
+                ->first();
 
         if(!$dat) {
             return Tool::jsonResp([
