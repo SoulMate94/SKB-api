@@ -57,6 +57,7 @@ class WechatPay
     public function connect()
     {
         $data = $this->curl_post_ssl('https://api.mch.weixin.qq.com/secapi/pay/refund', 'merchantid=1001000');
-        var_dump($data);
+//        var_dump($data);
+        var_dump(file_get_contents('/etc/pem/apiclient_cert.pem'));
     }
 }
