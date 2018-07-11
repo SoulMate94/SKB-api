@@ -57,14 +57,19 @@ class SkbUser extends Controller
 
             $users  = new SkbUsers();
 
-            $user   = $users->where('openid','=',$result['userinfo']['userinfo']->openId)->first();
+            $user   = $users->where('openid','=',$result['userinfo']['userinfo']->openId)
+                            ->first()
+                            ->toArray();
 
             if($user){
                 $ssn->set('user' , $user);
 
                 return Tool::jsonResp([
                     'err' => 0,
-                    'dat' => $user
+                    'dat' => [
+                        'dat' => $ssn->get('user'),
+                        'ssn' => session_id()
+                    ]
                 ]);
             }
 
@@ -105,14 +110,16 @@ class SkbUser extends Controller
         $params = $req->post('id');
 
         $user   = $users->where('id', $params)
-                        ->first()->toArray();
+                        ->first()
+                        ->toArray();
 
         if($user){
             $ssn->set('user',$user);
 
             return Tool::jsonResp([
                 'err' => 0,
-                'dat' => $user
+                'dat' => $user,
+                'ssn' => session_id()
             ]);
         }
 

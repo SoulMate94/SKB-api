@@ -26,6 +26,10 @@ $app->group([
     $app->post('login', 'User\SkbUser@testLogin');
     $app->post('create', 'Orders\Order@createOrder');
     $app->post('list', 'Orders\Order@orderList');
+    $app->post('pay', 'Orders\WechatPay@connect');
+    $app->get('pay/back', 'Orders\WechatPay@back');
+    $app->get('pay/refund', 'Orders\WechatPay@refund');
+
 });
 
 $app->group([

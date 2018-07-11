@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 class Order extends Controller
 {
     /**
-     * 下单;用户端
+     * 下单;用户端创建订单 by jizw
      */
     public function createOrder(Request $request, Session $ssn, OrderModel $order)
     {
@@ -29,6 +29,7 @@ class Order extends Controller
             'service_id'   => 'required|array'
         ]);
 
+        //用户校验
         if ($ssn->get('user')['id'] != $res['uid']) {
             return $this->jsonRes(-2, 'uid error', '');
         }
@@ -36,6 +37,7 @@ class Order extends Controller
         //验证价格的正确性
         $price_tmp = [];
         foreach ($res['product_info'] as $v) {
+            //提取提交产品id
             $price_tmp[] = $v['product_id'];
         }
         $prices = SkbProduct::select('product_price')->whereIn('id',$price_tmp);
@@ -43,17 +45,17 @@ class Order extends Controller
             $price_tmp += $v['product_price'];
         }
         //检测价格是否正常
-        if ($price_tmp != $v['total_price']) {
+        if ($price_tmp != $res['total_price']) {
             return $this->jsonRes(-3, 'price error', '');
         }
 
         $res['product_info']    = json_encode($res['product_info']);
         $res['order_number']    = trade_no();
 
-        $res = $order->createOrder($res);
-
-        if ($res) {
-            return $this->jsonRes( 0, 'create success', $res);
+        if ($order->createOrder($res)) {
+            return $this->jsonRes( 0, 'create success', [
+                'order_number' => $res['order_number']
+            ]);
         }
 
         return $this->jsonRes( -1, '服务器目前有些繁忙,请稍后再试', '');
