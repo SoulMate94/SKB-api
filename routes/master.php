@@ -16,10 +16,10 @@ $app->group([
     $app->get('get_master_verify_status', 'SkbMasterVerify@index'); // by jizw
 
     // 师傅认证详情
-    $app->get('get_master_verify_status', 'SkbMasterVerify@verifyList'); // by jizw
+    $app->get('get_master_verify_info', 'SkbMasterVerify@verifyInfo'); // by jizw
 
     // 师傅认证
-    $app->post('post_master_verfity', 'SkbMasterVerify@masterVerify'); // by jizw
+    $app->post('post_master_verify', 'SkbMasterVerify@masterVerify'); // by jizw
 });
 
 $app->group([

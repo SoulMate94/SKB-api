@@ -48,7 +48,7 @@ class SkbMasterVerify extends Controller
      * @param Request $req
      * @return $this
      */
-    public function verifyList(Session $ssn, masterVerify $verify)
+    public function verifyInfo(Session $ssn, masterVerify $verify)
     {
         $master_id = $ssn->get('user')['id'];
 
