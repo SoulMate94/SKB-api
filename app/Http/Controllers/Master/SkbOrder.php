@@ -9,13 +9,11 @@ use App\Traits\Tool;
 
 class SkbOrder extends Controller
 {
-    public function getOrderList(Request $request)
+    public function getOrderList(Request $request, Order $order)
     {
         $params = $request->all();
 
         $params['master_id'] = $request->get('master_id');
-
-        $order = new Order;
 
         // TODO
         $data  = $order->getMasterAllOrder($params);

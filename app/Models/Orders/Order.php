@@ -13,6 +13,11 @@ class Order extends Model
         return $this->insertGetId($res);
     }
 
+    public function getMasterAllOrder($params)
+    {
+        // TODO
+    }
+
     public function cancel($res)
     {
         $status = $this->checkOrderStatus($res);

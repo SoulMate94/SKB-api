@@ -11,4 +11,26 @@ $app->group([
 
     // 个人资料
     $app->get('get_master_info', 'SkbMaster@getMasterInfo');  // by caoxl
+
+    // 师傅认证状态
+    $app->get('get_master_verify_status', 'SkbMasterVerify@index'); // by jizw
+
+    // 师傅认证详情
+    $app->get('get_master_verify_status', 'SkbMasterVerify@verifyList'); // by jizw
+
+    // 师傅认证
+    $app->post('post_master_verfity', 'SkbMasterVerify@masterVerify'); // by jizw
+});
+
+$app->group([
+    'prefix'=>'test'
+], function ($app) {
+
+    $app->post('login', 'User\SkbUser@testLogin');
+    $app->post('create', 'Orders\Order@createOrder');
+    $app->post('list', 'Orders\Order@orderList');
+    $app->post('pay', 'Orders\WechatPay@connect');
+    $app->get('pay/back', 'Orders\WechatPay@back');
+    $app->get('pay/refund', 'Orders\WechatPay@refund');
+
 });

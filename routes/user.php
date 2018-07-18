@@ -11,4 +11,7 @@ $app->group([
 
     // 净水器详情
     $app->get('get_water_cleaner_info', 'SkbWaterCleaner@getWaterCleanerInfo');  // by caoxl
+
+    // 师傅&&用户 登录&&注册
+    $app->get('login', 'SkbUser@login'); // by jizw
 });
