@@ -13,6 +13,12 @@ use Illuminate\Http\Request,
 class SkbMasterVerify extends Controller
 {
 
+    /**
+     * 获取师傅认证状态
+     * @param Session $ssn
+     * @param masterVerify $verify
+     * @return $this
+     */
     public function index(Session $ssn, masterVerify $verify)
     {
 
@@ -44,7 +50,7 @@ class SkbMasterVerify extends Controller
     }
 
     /**
-     * 师傅认证
+     * 获取师傅认证详情
      * @param Request $req
      * @return $this
      */
@@ -84,12 +90,19 @@ class SkbMasterVerify extends Controller
         ]);
     }
 
-    public function verifyListEdit(Session $ssn, Request $req, masterVerify $verify)
+    /**
+     * 返回修改
+     * @param Session $ssn
+     * @param Request $req
+     * @param masterVerify $verify
+     * @return $this
+     */
+    public function verifyInfoEdit(Session $ssn, Request $req, masterVerify $verify)
     {
         $params = $req->all();
 
         $rules  =  [
-            'username'         =>  'required|string',
+            'username'          =>  'required|string',
             'id_number'         =>  [
                 'required',
                 'regex:/(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/',
@@ -134,7 +147,15 @@ class SkbMasterVerify extends Controller
     }
 
     /**
-     * 提交认证表单
+     * 申诉
+     */
+    public function appeal()
+    {
+        // TODO
+    }
+
+    /**
+     * 师傅提交认证表单
      * @param Request $req
      * @param masterVerify $verify
      * @return $this
@@ -187,6 +208,11 @@ class SkbMasterVerify extends Controller
         }
     }
 
+    /**
+     * 处理提交表单
+     * @param Request $req
+     * @return bool
+     */
     public function masterVerifyFile(Request $req)
     {
         if(!$req->hasFile('id_card_img')) {
