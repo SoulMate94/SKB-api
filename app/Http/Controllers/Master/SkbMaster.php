@@ -37,8 +37,15 @@ class SkbMaster extends Controller
         return $masterId;
     }
 
-    public function verifyMaster()
+
+    /**
+     * 切换师傅接单状态
+     * @param $master_id
+     * @return bool
+     */
+    public function switchWorkStatus($master_id)
     {
-        return 'master verify';
+        // TODO
+        return true;
     }
 }
