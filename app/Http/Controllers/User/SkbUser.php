@@ -17,6 +17,10 @@ class SkbUser extends Controller
         Config::setup(config('services.wechat'));
     }
 
+    /**
+     * @param Session $ssn
+     * @return $this
+     */
     public function getUserInfo(Session $ssn)
     {
         $user_id = $ssn->get('id');
