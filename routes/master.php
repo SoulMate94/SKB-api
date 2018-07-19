@@ -20,6 +20,15 @@ $app->group([
 
     // 师傅认证
     $app->post('post_master_verify', 'SkbMasterVerify@masterVerify'); // by jizw
+
+    // 获取信用分
+    $app->get('get_credit_score', 'SkbHomePage@getCreditScore'); // by caoxl
+
+    // 获取已赚取金额
+    $app->get('get_earned_money', 'SkbHomePage@getEarnedMoney'); // by caoxl
+
+    // 获取接单数
+    $app->get('get_order_number', 'SkbHomePage@getOrderNumber'); // by caoxl
 });
 
 $app->group([
