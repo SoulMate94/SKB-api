@@ -5,22 +5,28 @@ namespace App\Http\Controllers\Orders;
 use App\Http\Controllers\Controller;
 use App\Models\{
     Common\SkbProduct,
-    Orders\Order as OrderModel,
+    Orders\SkbOrder as OrderModel,
     Master\Verify
 };
 use App\Traits\Session;
 use App\Traits\Tool;
 use Illuminate\Http\Request;
 
-class Order extends Controller
+class SkbOrder extends Controller
 {
+
     /**
-     * 下单;用户端创建订单 by jizw
+     * 下单;用户端创建订单
+     * @param Request $req
+     * @param Session $ssn
+     * @param OrderModel $order
+     * @return $this
      */
-    public function createOrder(Request $request, Session $ssn, OrderModel $order)
+    public function createOrder(Request $req, Session $ssn, OrderModel $order)
     {
-        $res = $request->all();
-        $this->validate($request,[
+        $res = $req->all();
+
+        $this->validate($req,[
             'uid'          => 'required|numeric',
             'product_info' => 'required|array',
             'end_addr'     => 'required|numeric',
@@ -31,7 +37,7 @@ class Order extends Controller
 
         //用户校验
         if ($ssn->get('user')['id'] != $res['uid']) {
-            return $this->jsonRes(-2, 'uid error', '');
+            return Tool::jsonR(-2, 'uid error', '');
         }
 
         //验证价格的正确性
@@ -46,58 +52,64 @@ class Order extends Controller
         }
         //检测价格是否正常
         if ($price_tmp != $res['total_price']) {
-            return $this->jsonRes(-3, 'price error', '');
+            return Tool::jsonR(-3, 'price error', '');
         }
 
         $res['product_info']    = json_encode($res['product_info']);
         $res['order_number']    = trade_no();
 
         if ($order->createOrder($res)) {
-            return $this->jsonRes( 0, 'create success', [
+            return Tool::jsonR( 0, 'create success', [
                 'order_number' => $res['order_number']
             ]);
         }
 
-        return $this->jsonRes( -1, '服务器目前有些繁忙,请稍后再试', '');
+        return Tool::jsonR( -1, '服务器目前有些繁忙,请稍后再试', '');
     }
 
     /**
      * 取消订单;用户端,师傅端
      */
-    public function cancelOrder(Request $request, Session $ssn, OrderModel $order)
+    public function cancelOrder(Request $req, Session $ssn, OrderModel $order)
     {
-        $this->validate($request,[
+        $this->validate($req,[
             'uid'          => 'required|numeric',
             'order_number' => 'required',
         ]);
-        $res = $request->all();
+
+        $res = $req->all();
+
         if ($res['uid'] == $ssn->get('user')['id']) {
             $result = $order->cancel($res);
             switch ($result) {
                 case 0 :
-                    return $this->jsonRes(0, 'cancel order success', '');
+                    return Tool::jsonR(0, 'cancel order success', '');
                 case -1 :
-                    return $this->jsonRes(-2, 'order_number error', $res['order_number']);
+                    return Tool::jsonR(-2, 'order_number error', $res['order_number']);
                 case -2 :
-                    return $this->jsonRes( -3, '服务器异常', '');
+                    return Tool::jsonR( -3, '服务器异常', '');
                 case -3 :
-                    return $this->jsonRes( -4, '该订单状态不可修改', '');
+                    return Tool::jsonR( -4, '该订单状态不可修改', '');
             }
         }
-        return $this->jsonRes(-1, '用户信息异常', $res['uid']);
+
+        return Tool::jsonR(-1, '用户信息异常', $res['uid']);
     }
 
     /**
      * 撤销订单;用户端,师傅端
      */
-    public function revokeOrder(Request $request, Session $ssn, OrderModel $order)
+    public function revokeOrder(Request $req, Session $ssn, OrderModel $order)
     {
-        $this->validate($request,[
+        $this->validate($req,[
             'uid'          => 'numeric',
             'order_number' => 'required',
         ]);
-        $res = $request->all();
+
+        $res = $req->all();
+
         $usr = $ssn->get('user');
+
         switch ($usr['role']) {
             case 1 :
                 //用户撤单 费用扣除部分还处于 TODO
@@ -105,38 +117,40 @@ class Order extends Controller
                     $result = $order->userRevokeOrder($res);
                     switch ($result) {
                         case 0 :
-                            return Tool::jr(0, '用户撤单成功', '');
+                            return Tool::jsonR(0, '用户撤单成功', '');
                         case 1 :
-                            return Tool::jr(1, '用户撤单成功,已扣除相关费用', '');
+                            return Tool::jsonR(1, '用户撤单成功,已扣除相关费用', '');
                         case -2 :
-                            return  Tool::jr(-2, '订单编号异常', $res['order_number']);
+                            return  Tool::jsonR(-2, '订单编号异常', $res['order_number']);
                         case -3 :
-                            return Tool::jr(-3, '服务器异常', $res['order_number']);
+                            return Tool::jsonR(-3, '服务器异常', $res['order_number']);
                         case -4 :
-                            return Tool::jr(-4, '该订单状态不可进行这种操作', '');
+                            return Tool::jsonR(-4, '该订单状态不可进行这种操作', '');
                     }
                 }
-                return Tool::jr(-1, '用户信息异常', $res['uid']);
+
+                return Tool::jsonR(-1, '用户信息异常', $res['uid']);
             case 2 :
                 //师傅撤单 费用扣除部分还处于 TODO
                 if ($res['mid']&&$res['mid'] == $usr['id']) {
                     $result = $order->masterRevokeOrder($res);
                     switch ($result) {
                         case 0 :
-                            return Tool::jr(0, '师傅撤单成功', '');
+                            return Tool::jsonR(0, '师傅撤单成功', '');
                         case 1 :
-                            return Tool::jr(1, '师傅撤单成功,已扣除相关费用', '');
+                            return Tool::jsonR(1, '师傅撤单成功,已扣除相关费用', '');
                         case -2 :
-                            return  Tool::jr(-2, '订单编号异常', $res['order_number']);
+                            return  Tool::jsonR(-2, '订单编号异常', $res['order_number']);
                         case -3 :
-                            return Tool::jr(-3, '服务器异常', $res['order_number']);
+                            return Tool::jsonR(-3, '服务器异常', $res['order_number']);
                         case -4 :
-                            return Tool::jr(-4, '该订单状态不可进行这种操作', '');
+                            return Tool::jsonR(-4, '该订单状态不可进行这种操作', '');
                     }
                 }
-                return Tool::jr(-1, '师傅信息异常', $res['mid']);
+
+                return Tool::jsonR(-1, '师傅信息异常', $res['mid']);
             default :
-                return Tool::jr(-10, '用户状态异常', '');
+                return Tool::jsonR(-10, '用户状态异常', '');
         }
     }
 
@@ -151,10 +165,10 @@ class Order extends Controller
     /**
      * 订单列表;师傅端
      */
-    public function orderList( Session $ssn, OrderModel $order, Verify $verify)
+    public function orderList(Session $ssn, OrderModel $order, Verify $verify)
     {
         $usr = $ssn->get('user');
-        if ($usr['role'] != 2) return Tool::jr(-9, '这个操作只有师傅才可以进行', '');
+        if ($usr['role'] != 2) return Tool::jsonR(-9, '这个操作只有师傅才可以进行', '');
 
         $masterArea = json_decode($verify->select('work_area')
                                          ->where([
@@ -168,16 +182,18 @@ class Order extends Controller
             ['appoint_time','>',time()],
         ])->whereIn('end_addr',$masterArea)
           ->get()->toArray();
+
         if ($res) {
-            return Tool::jr(0, 'get order list success', $res);
+            return Tool::jsonR(0, 'get order list success', $res);
         }
-        return Tool::jr(1, '目前还没有合适的订单', $res);
+
+        return Tool::jsonR(1, '目前还没有合适的订单', $res);
     }
 
     /**
      * 接单;师傅端
      */
-    public function receiveOrder(Request $request, Session $ssn, OrderModel $order)
+    public function receiveOrder(Request $req, Session $ssn, OrderModel $order)
     {
         // TODO
     }
@@ -248,9 +264,9 @@ class Order extends Controller
                     'order_id', 'order_status'
                 ]);
 
-        return Tool::jr(0, '获取订单列表成功', [
-            'items'         =>  $data,
-            'total_cont'    => 500
+        return Tool::jsonR(0, '获取订单列表成功', [
+            'items'      =>  $data,
+            'total_cont' => 500
         ]);
     }
 
@@ -262,14 +278,4 @@ class Order extends Controller
     {
         // TODO
     }
-
-    private function jsonRes($err, $msg, $dat)
-    {
-        return Tool::jsonResp([
-            'err' => $err,
-            'msg' => $msg,
-            'dat' => $dat
-        ]);
-    }
-
 }

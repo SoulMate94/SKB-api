@@ -33,7 +33,7 @@ class SkbUser extends Controller
         $err = $dat ? 0 : 404;
         $msg = $dat ? 'success' : 'fail';
 
-        return Tool::jr($err, $msg, $dat);
+        return Tool::jsonR($err, $msg, $dat);
     }
 
     public function index()

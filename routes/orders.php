@@ -10,17 +10,17 @@ $app->group([
     'prefix'    => 'master/orders'
 ], function () use ($app) {
     // 生成订单
-    $app->post('order_create', 'Order@createOrder'); // by jizw
+    $app->post('order_create', 'SkbOrder@createOrder'); // by jizw
 
     // 查看订单
-    $app->post('order_list', 'Order@orderList'); // by jizw
+    $app->post('order_list', 'SkbOrder@orderList'); // by jizw
 
     // 取消订单
-    $app->post('order_list_cancel', 'Order@cancelOrder'); // by jizw
+    $app->post('order_cancel', 'SkbOrder@cancelOrder'); // by jizw
 
     // 撤销订单
-    $app->post('order_revoke', 'Order@revokeOrder'); // by jizw
+    $app->post('order_revoke', 'SkbOrder@revokeOrder'); // by jizw
 
     // 订单状态
-    $app->get('order_status', 'Order@statusOrder'); //by jizw
+    $app->get('order_status', 'SkbOrder@statusOrder'); //by jizw
 });

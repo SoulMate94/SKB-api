@@ -63,7 +63,6 @@ class SkbMasterVerify extends Controller
             'id_card_img',
             'work_area',
             'product_type_id',
-            'service_type_id',
             'service_sta_time',
             'service_end_time',
             'failure_reason',
@@ -114,10 +113,12 @@ class SkbMasterVerify extends Controller
             'work_year'         =>  'required|numeric',
             'work_area'         =>  'required|array',
             'product_type_id'   =>  'required|array',
-            'service_type_id'   =>  'required|array',
-            'service_sta_time'  =>  'required|numeric',
-            'service_end_time'  =>  'required|numeric',
+            'service_sta_time'  =>  'required',
+            'service_end_time'  =>  'required',
         ];
+
+        $params['service_sta_time'] = strtotime($params['service_sta_time']);
+        $params['service_end_time'] = strtotime($params['service_end_time']);
 
         if ($msg = $this->check($params, $rules)) {
             return Tool::jsonResp([
@@ -178,7 +179,6 @@ class SkbMasterVerify extends Controller
             'work_area'         =>  'required|array',
             'id_card_img'       =>  'required|array',
             'product_type_id'   =>  'required|array',
-            'service_type_id'   =>  'required|array',
             'service_sta_time'  =>  'required|numeric',
             'service_end_time'  =>  'required|numeric',
         ];
@@ -246,7 +246,6 @@ class SkbMasterVerify extends Controller
             "work_area"         =>  ":attribute 不能为空",
             "id_card_img"       =>  ":attribute 不能为空",
             "product_type_id"   =>  ":attribute 不能为空",
-            "service_type_id"   =>  ":attribute 不能为空",
             "service_sta_time"  =>  ":attribute 不能为空",
             "service_end_time"  =>  ":attribute 不能为空",
         );
@@ -259,7 +258,6 @@ class SkbMasterVerify extends Controller
             "work_area"         =>  "工作区域",
             "id_card_img"       =>  "身份证照片",
             "product_type_id"   =>  "产品类别",
-            "service_type_id"   =>  "服务类别",
             "service_sta_time"  =>  "服务开始时间",
             "service_end_time"  =>  "服务结束时间",
         );

@@ -120,7 +120,7 @@ class Tool
             ->header('Content-Type', 'application/json; charset=utf-8');
     }
 
-    public static function jr(
+    public static function jsonR(
         $err,
         $msg,
         $dat,

@@ -27,4 +27,5 @@ $app->group([
     $app->get('get_open_area_province', 'SkbOpenArea@getOpenAreaProvince'); // by caoxl
     $app->get('get_open_area_city', 'SkbOpenArea@getOpenAreaCity'); // by caoxl
     $app->get('get_open_area_district', 'SkbOpenArea@getOpenAreaDistrict'); // by caoxl
+    $app->get('get_open_area', 'SkbOpenArea@getOpenArea'); // by caoxl
 });

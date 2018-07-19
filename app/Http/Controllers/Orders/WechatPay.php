@@ -82,7 +82,7 @@ class WechatPay
         }
         $mobel['paySign']  = $this->getSign($str);
 
-        return Tool::jr(0, 'order create success', $mobel);
+        return Tool::jsonR(0, 'order create success', $mobel);
     }
 
     /*
@@ -127,9 +127,9 @@ class WechatPay
         $res    = $this->curl_post_ssl($url, $wPay);
         if($res){
             $res    = Tool::xmlToArray($res);
-            return Tool::jr(0, 'refund success', $res);
+            return Tool::jsonR(0, 'refund success', $res);
         }
-        return Tool::jr(-1, 'connect fail', '');
+        return Tool::jsonR(-1, 'connect fail', '');
     }
 
     private function curl_post_ssl($url, $vars, $second = 30, $aHeader = [])
