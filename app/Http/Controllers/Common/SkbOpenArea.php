@@ -70,4 +70,24 @@ class SkbOpenArea extends Controller
             'dat' => $data
         ]);
     }
+
+    public function getOpenArea()
+    {
+        $model     = new SkbOpenAreaModel;
+        $province  = $model->getOpenArea();
+
+        foreach ($province as $v) {
+            $v->city = $model->getOpenAreaCity($v->province);
+
+            foreach ($v->city as $val) {
+                $val->district = $model->getOpenAreaDistrict($val->city);
+            }
+        }
+
+        return Tool::jsonResp([
+            'err' => 0,
+            'msg' => 'ok',
+            'dat' => $province
+        ]);
+    }
 }

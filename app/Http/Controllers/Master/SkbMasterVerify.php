@@ -113,9 +113,12 @@ class SkbMasterVerify extends Controller
             'work_year'         =>  'required|numeric',
             'work_area'         =>  'required|array',
             'product_type_id'   =>  'required|array',
-            'service_sta_time'  =>  'required|numeric',
-            'service_end_time'  =>  'required|numeric',
+            'service_sta_time'  =>  'required',
+            'service_end_time'  =>  'required',
         ];
+
+        $params['service_sta_time'] = strtotime($params['service_sta_time']);
+        $params['service_end_time'] = strtotime($params['service_end_time']);
 
         if ($msg = $this->check($params, $rules)) {
             return Tool::jsonResp([
