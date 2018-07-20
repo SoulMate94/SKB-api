@@ -18,7 +18,7 @@ class uploadFile extends Controller
     {
         $folder   = $req->post('folder');
         $identity = $req->get('identity') == 1 ? 'master':'user';
-        return $req->post('folder');
+        return 'test'.$folder;
 
         if(!$req->hasFile('skbPublicFile')) {
             return Tool::jsonR(-1,'File error', null);
