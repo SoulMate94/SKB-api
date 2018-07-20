@@ -28,8 +28,8 @@ class uploadFile extends Controller
             foreach ($files as $k => $value){
                 $fileName = 'skb_'.time().rand(1000, 9999).'.'.$value->getClientOriginalExtension();
                 $folder_tmp   = $folder.'/'.$identity;
-                if($value->move('/var/www/skb/skbApi/public/'.$folder_tmp, $fileName)){
-                    $path[$k] = $folder_tmp.'/'.$fileName;
+                if($value->move('/var/www/skb/skbApi/public/uploads/'.$folder_tmp, $fileName)){
+                    $path[$k] = '/uploads/'$folder_tmp.'/'.$fileName;
                 }
             }
 
@@ -38,8 +38,8 @@ class uploadFile extends Controller
 
         $fileName = 'skb_'.time().rand(1000, 9999).'.'.$files->getClientOriginalExtension();
         $folder_tmp   = $folder.'/'.$identity;
-        if($files->move('/var/www/skb/skbApi/public/uploads'.$folder_tmp, $fileName)){
-            $path[] = $folder_tmp.'/'.$fileName;
+        if($files->move('/var/www/skb/skbApi/public/uploads/'.$folder_tmp, $fileName)){
+            $path[] = '/uploads/'$folder_tmp.'/'.$fileName;
         }
 
         return Tool::jsonR(0,'success',$path);
