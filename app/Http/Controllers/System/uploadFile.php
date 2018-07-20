@@ -16,9 +16,8 @@ class uploadFile extends Controller
 {
     public function uploadImage(Request $req)
     {
-        $folder   = $req->input('folder');
-//        $identity = $req->input('identity') == 1 ? 'master':'user';
-        return Tool::jsonR(-5, 'request test', $folder);
+        $folder   = $req->get('folder');
+        $identity = $req->get('identity') == 1 ? 'master':'user';
 
         if(!$req->hasFile('skbPublicFile')) {
             return Tool::jsonR(-1,'File error', null);
@@ -39,7 +38,7 @@ class uploadFile extends Controller
 
         $fileName = 'skb_'.time().rand(1000, 9999).'.'.$files->getClientOriginalExtension();
         $folder_tmp   = $folder.'/'.$identity;
-        if($files->move('/var/www/skb/skbApi/public/'.$folder_tmp, $fileName)){
+        if($files->move('/var/www/skb/skbApi/public/uploads'.$folder_tmp, $fileName)){
             $path[] = $folder_tmp.'/'.$fileName;
         }
 
