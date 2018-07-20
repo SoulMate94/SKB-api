@@ -16,7 +16,7 @@ class uploadFile extends Controller
 {
     public function uploadImage(Request $req)
     {
-        $folder   = $req->post('folder');
+        $folder   = $req->get('folder');
         $identity = $req->get('identity') == 1 ? 'master':'user';
         return 'test'.$folder;
 
