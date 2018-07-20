@@ -5,5 +5,5 @@ $app->group([
     'prefix'    => 'system',
 ], function () use ($app) {
     // 个人资料
-    $app->get('/admin/upload/{folder}/{identity}', 'uploadFile@uploadImage');  // by caoxl
+    $app->post('/admin/upload/{folder}/{identity}', 'uploadFile@uploadImage');  // by caoxl
 });
