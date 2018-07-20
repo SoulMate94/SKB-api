@@ -16,14 +16,13 @@ class uploadFile extends Controller
 {
     public function uploadImage(Request $req)
     {
-        $fileWord = $req->get('file');
         $folder   = $req->get('folder');
         $identity = $req->get('identity') == 1 ? 'master':'user';
 
-        if(!$req->hasFile($fileWord)) {
+        if(!$req->hasFile('skbPublicFile')) {
             return Tool::jsonR(-1,'File error', null);
         }
-        $file = $req->file($fileWord);
+        $file = $req->file('skbPublicFile');
 
         foreach ($file as $k => $value){
             $fileName = 'skb_'.time().rand(1000, 9999).'.'.$value->getClientOriginalExtension();
