@@ -39,7 +39,7 @@ class uploadFile extends Controller
         $fileName = 'skb_'.time().rand(1000, 9999).'.'.$files->getClientOriginalExtension();
         $folder_tmp   = $folder.'/'.$identity;
         if($files->move('/var/www/skb/skbApi/public/uploads/'.$folder_tmp, $fileName)){
-            $path[] = '/uploads/'$folder_tmp.'/'.$fileName;
+            $path[] = '/uploads/'.$folder_tmp.'/'.$fileName;
         }
 
         return Tool::jsonR(0,'success',$path);
