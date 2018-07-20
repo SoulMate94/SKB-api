@@ -25,7 +25,7 @@ class SkbOpenArea extends Model
     {
         $res = DB::table('skb_open_area as a')
             ->distinct()
-            ->select('a.city', 'b.name', 'b.parent_id')
+            ->select('a.province', 'a.city', 'b.name', 'b.parent_id')
             ->leftjoin('skb_area as b', 'a.city', '=', 'b.id')
             ->where('a.is_open', 1)
             ->where('b.parent_id', $province)
@@ -37,7 +37,7 @@ class SkbOpenArea extends Model
     public function getOpenAreaDistrict($city)
     {
         $res = DB::table('skb_open_area as a')
-            ->select('a.id', 'a.district', 'b.name', 'b.parent_id')
+            ->select('a.id', 'a.province', 'a.city', 'a.district', 'b.name', 'b.parent_id')
             ->leftjoin('skb_area as b', 'a.district', '=', 'b.id')
             ->where('a.is_open', 1)
             ->where('b.parent_id', $city)

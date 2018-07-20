@@ -29,6 +29,12 @@ $app->group([
 
     // 获取接单数
     $app->get('get_order_number', 'SkbHomePage@getOrderNumber'); // by caoxl
+
+    // 设置密码
+    $app->post('set_master_password', 'SkbPassword@setMasterPassword'); // by caoxl
+
+    // 修改密码
+    $app->post('update_master_password', 'SkbPassword@updateMasterPassword'); // by caoxl
 });
 
 $app->group([
