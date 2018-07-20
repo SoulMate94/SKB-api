@@ -22,15 +22,26 @@ class uploadFile extends Controller
         if(!$req->hasFile('skbPublicFile')) {
             return Tool::jsonR(-1,'File error', null);
         }
-        $file = $req->file('skbPublicFile');
+        $files = $req->file('skbPublicFile');
 
-        foreach ($file as $k => $value){
-            $fileName = 'skb_'.time().rand(1000, 9999).'.'.$value->getClientOriginalExtension();
-            $folder_tmp   = $folder.'/'.$identity;
-            if($value->move('/var/www/skb/skbApi/public/'.$folder_tmp, $fileName)){
-                $path[$k] = $folder_tmp.'/'.$fileName;
+        if(is_array($files)) {
+            foreach ($files as $k => $value){
+                $fileName = 'skb_'.time().rand(1000, 9999).'.'.$value->getClientOriginalExtension();
+                $folder_tmp   = $folder.'/'.$identity;
+                if($value->move('/var/www/skb/skbApi/public/'.$folder_tmp, $fileName)){
+                    $path[$k] = $folder_tmp.'/'.$fileName;
+                }
             }
+
+            return Tool::jsonR(0,'success',$path);
         }
+
+        $fileName = 'skb_'.time().rand(1000, 9999).'.'.$files->getClientOriginalExtension();
+        $folder_tmp   = $folder.'/'.$identity;
+        if($files->move('/var/www/skb/skbApi/public/'.$folder_tmp, $fileName)){
+            $path[] = $folder_tmp.'/'.$fileName;
+        }
+
         return Tool::jsonR(0,'success',$path);
     }
 
