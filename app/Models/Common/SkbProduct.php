@@ -12,7 +12,7 @@ class SkbProduct extends Model
     public function getProductByCateId($cate_id)
     {
         $Product = DB::table($this->table)
-            ->select('product_cate_id', 'product_name', 'product_price', 'product_img', 'product_exp')
+            ->select('id', 'product_cate_id', 'product_name', 'product_model' , 'product_img', 'install_price', 'uninstall_price', 'product_exp')
             ->where('product_cate_id',"$cate_id")
             ->where('is_active', '1')
             ->get()

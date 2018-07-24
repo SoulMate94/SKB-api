@@ -23,7 +23,6 @@ $app->group([
 
     // 产品相关
     $app->get('get_product_cate_list', 'SkbProductCate@getProductCateList');  // by caoxl
-    $app->get('get_product_list', 'SkbProduct@getProductList'); // by caoxl
     $app->get('get_product_by_cate_id', 'SkbProduct@getProductByCateId'); // by caoxl
 
     // 意见反馈

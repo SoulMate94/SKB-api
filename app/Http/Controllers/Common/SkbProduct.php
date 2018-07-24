@@ -9,11 +9,6 @@ use App\Models\Common\SkbProduct as SkbProductModel;
 
 class SkbProduct extends Controller
 {
-    public function getProductList()
-    {
-        // TODO
-    }
-
     /**
      * 通过产品分类ID获取产品
      * @param Request $req
