@@ -9,10 +9,11 @@
 namespace App\Http\Controllers\System;
 
 use Illuminate\Http\Request;
+use App\Traits\Tool;
 
 class WeChatPushServerCheck
 {
-    public function getWechatServiceCheck(Request $req)
+    public function getWechatServiceCheck(Request $req, Tool $tool)
     {
         $signature  = $req->get('signature');
         $timestamp  = $req->get('timestamp');
@@ -22,7 +23,7 @@ class WeChatPushServerCheck
             return $req->get('echostr');
         }
 
-        return false;
+        return $tool->jsonR(-1,'You are false', null);
     }
 
     private function checkSignature($signature, $timestamp, $nonce)
