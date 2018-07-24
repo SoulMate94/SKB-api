@@ -139,4 +139,21 @@ class Tool
             ->header('Content-Type', 'application/json; charset=utf-8');
     }
 
+    public static function uploadFile($req, $fileWord, $folder)
+    {
+        if(!$req->hasFile($fileWord)) {
+            return false;
+        }
+        $file = $req->file($fileWord);
+
+        foreach ($file as $k => $value){
+            $fileName = 'skb_'.time().rand(1000, 9999).'.'.$value->getClientOriginalExtension();
+            $folder_tmp   = $folder.'/'.date('Ymd');
+            if($value->move(env('UPLOAD_FILES').$folder_tmp, $fileName)){
+                $path[$k] = $folder_tmp.'/'.$fileName;
+            }
+        }
+        return $path;
+    }
+
 }
