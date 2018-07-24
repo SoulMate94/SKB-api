@@ -28,6 +28,7 @@ $app->configure('custom');
 $app->configure('cache');
 $app->configure('jwt');
 $app->configure('services');
+$app->configure('service_url');
 //$app->configure('filesystems');
 
 
