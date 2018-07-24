@@ -27,4 +27,5 @@ $app->group([
 
     // 意见反馈
     $app->post('submit_suggest', 'SkbSuggestions@submitSuggestion');  // by caoxl
+    $app->post('submit_feedback', 'SkbSuggestions@submitFeedback');  // by caoxl
 });
