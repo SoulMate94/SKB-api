@@ -13,7 +13,8 @@ class SkbOpenArea extends Model
     public function getOpenAreaProvince()
     {
         $res = DB::table('skb_open_area as a')
-                ->select('a.id', 'a.province', 'b.name')
+                ->distinct()
+                ->select('a.province', 'b.name')
                 ->leftjoin('skb_area as b', 'a.province', '=', 'b.id')
                 ->where('a.is_open', 1)
                 ->get();

@@ -66,6 +66,7 @@ class SkbAddress extends Controller
         ]);
 
         $params = $req->all();
+        $params['uid'] = $uid;
 
         $addressModel = new SkbAddressModel;
 
