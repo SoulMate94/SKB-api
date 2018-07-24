@@ -5,6 +5,10 @@ $app->group([
 ], function () use ($app) {
     // 银行卡列表
     $app->get('get_bank_card_list', 'SkbBankCard@bankCardList');  // by caoxl
+    // 添加/更新银行卡
+    $app->get('create_or_update_bankcard', 'SkbBankCard@createOrUpdateBankCard');  // by caoxl
+    // 添加支付宝
+    $app->get('create_alipay', 'SkbBankCard@createAlipay');  // by caoxl
 
     // 服务类别
     $app->get('get_service_cate_list', 'SkbServiceCate@getServiceCateList');  // by caoxl
