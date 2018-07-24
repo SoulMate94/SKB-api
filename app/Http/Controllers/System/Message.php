@@ -6,7 +6,7 @@
 namespace App\Http\Controllers\System;
 
 use Illuminate\Http\Request;
-use App\Traits\Tool;
+use App\Traits\{Tool, CURL};
 
 class Message implements \ArrayAccess
 {
@@ -106,5 +106,16 @@ class Message implements \ArrayAccess
         }
 
         return false;
+    }
+
+    protected function push()
+    {
+        $url = config('service_url.wechat.template_message.get_template_list');
+        var_dump($url);
+        CURL::curlPostSsl($url, '');
+    }
+    public function test (Request $req)
+    {
+        $this->push();
     }
 }
