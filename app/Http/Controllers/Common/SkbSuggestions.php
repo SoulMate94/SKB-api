@@ -64,7 +64,7 @@ class SkbSuggestions extends Controller
         $content = $req->get('feedback_content');
         $uid     = $ssn->get('user.id');
 
-        $dat = DB::table('skb_suggestions')->insert([
+        $dat = DB::table('skb_feedback')->insert([
             'uid'              => $uid,
             'feedback_content' => $content,
             'created_at'       => date('Y-m-d H:i:s', time()),
