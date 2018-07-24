@@ -20,4 +20,13 @@ class SkbArticleCate extends Model
 
         return $cate;
     }
+
+    public function getArticleCateList()
+    {
+        $cate = DB::table($this->table)
+            ->orderby('order')
+            ->get();
+
+        return $cate;
+    }
 }

@@ -4,18 +4,10 @@ $app->group([
     'namespace' => 'Common',
 ], function () use ($app) {
     // 文章相关
-    $app->get('get_article_by_cate', 'SkbArticle@getArticleByCate');  // by caoxl
+    $app->get('get_article_cate_list', 'SkbArticle@getArticleCateList'); // by caoxl
+    $app->get('get_article_by_cate_name', 'SkbArticle@getArticleByCateName');  // by caoxl
+    $app->get('get_article_by_cate_id', 'SkbArticle@getArticleByCateId');  // by caoxl
     $app->get('get_article_info', 'SkbArticle@getArticleInfo');  // by caoxl
-
-    // 意见反馈
-    $app->post('submit_suggest', 'SkbSuggestions@submitSuggestion');  // by caoxl
-
-    // 产品类别
-    $app->get('get_product_cate_list', 'SkbProductCate@getProductCateList');  // by caoxl
-
-    // 产品管理
-    $app->get('get_product_list', 'SkbProduct@getProductList'); // by caoxl
-    $app->get('get_product_by_cate_id', 'SkbProduct@getProductByCateId'); // by caoxl
 
     // 地址相关
     $app->get('get_address', 'SkbAddress@getAddress');  // by caoxl
@@ -28,4 +20,12 @@ $app->group([
     $app->get('get_open_area_city', 'SkbOpenArea@getOpenAreaCity'); // by caoxl
     $app->get('get_open_area_district', 'SkbOpenArea@getOpenAreaDistrict'); // by caoxl
     $app->get('get_open_area', 'SkbOpenArea@getOpenArea'); // by caoxl
+
+    // 产品相关
+    $app->get('get_product_cate_list', 'SkbProductCate@getProductCateList');  // by caoxl
+    $app->get('get_product_list', 'SkbProduct@getProductList'); // by caoxl
+    $app->get('get_product_by_cate_id', 'SkbProduct@getProductByCateId'); // by caoxl
+
+    // 意见反馈
+    $app->post('submit_suggest', 'SkbSuggestions@submitSuggestion');  // by caoxl
 });

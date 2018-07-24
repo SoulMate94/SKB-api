@@ -11,18 +11,37 @@ use App\Traits\Tool;
 class SkbArticle extends Controller
 {
     /**
-     * 根据文章分类查询文章
+     * 获取文章分类列表
+     * @return $this
+     */
+    public function getArticleCateList()
+    {
+        $cate = new SkbArticleCate;
+        $res  = $cate->getArticleCateList();
+
+        $err = $res ? 0 : 404;
+        $msg = $res ? 'success' : '暂无数据';
+        $dat = $res ?? [];
+
+        return Tool::jsonResp([
+            'err' => $err,
+            'msg' => $msg,
+            'dat' => $dat,
+        ]);
+    }
+
+    /**
+     * 根据文章分类查询文章列表
      * @param Request $req
      * @return $this
      */
-    public function getArticleByCate(Request $req)
+    public function getArticleByCateName(Request $req)
     {
         $this->validate($req, [
             'cate_name' => 'required',
         ]);
 
         $cate_name = $req->get('cate_name');
-
         $cateModel = new SkbArticleCate;
 
         if ($cate_name) {
@@ -55,6 +74,33 @@ class SkbArticle extends Controller
             'dat' => $dat,
         ]);
 
+    }
+
+    /**
+     * 根据文章分类ID获取文章列表
+     * @param Request $req
+     * @return $this
+     */
+    public function getArticleByCateId(Request $req)
+    {
+        $this->validate($req, [
+            'cate_id' => 'required',
+        ]);
+
+        $cate_id = $req->get('cate_id');
+        $article = new SkbArticleModel;
+
+        $res = $article->getArticleByCateId($cate_id);
+
+        $err = $res ? 0 : 404;
+        $msg = $res ? 'success' : '暂无数据';
+        $dat = $res ?? [];
+
+        return Tool::jsonResp([
+            'err' => $err,
+            'msg' => $msg,
+            'dat' => $dat,
+        ]);
     }
 
     /**
