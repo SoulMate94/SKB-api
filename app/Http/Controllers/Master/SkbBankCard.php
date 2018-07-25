@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller,
     App\Models\Master\SkbBankCard as SkbBankCardModel;
 use Illuminate\Http\Request,
     Illuminate\Support\Facades\Validator;
+use Zhuzhichao\BankCardInfo\BankCard;
 
 class SkbBankCard extends Controller
 {
@@ -39,21 +40,16 @@ class SkbBankCard extends Controller
     }
 
     /**
-     * 添加银行卡
+     * 绑定银行卡
      * @param Request $req
      * @param SkbBankCardModel $bankcard
      * @return $this
      */
-    public function createOrUpdateBankCard(Request $req, SkbBankCardModel $bankcard)
+    public function bindBankCard(Request $req, SkbBankCardModel $bankcard)
     {
-        $params = $req->all();
-
         $rules  =  [
-            'real_name'   => 'required|string',
-            'ID_number'   => [
-                'required',
-                'regex:/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}(\d|x|X)$/',
-            ],
+            'master_id' => 'required|numeric',
+            'real_name' => 'required|string',
             'bank_reserve_mobile' => [
                 'required',
                 'numeric',
@@ -67,6 +63,8 @@ class SkbBankCard extends Controller
             'bank_branch_name' => 'required|string',
         ];
 
+        $params = $req->all();
+
         if ($msg = $this->check($params, $rules)) {
             return Tool::jsonResp([
                 'err' => '403',
@@ -74,7 +72,25 @@ class SkbBankCard extends Controller
             ]);
         }
 
-        $params['is_verify'] = -1;
+        $bankCardNumber = $bankcard::where('bank_card_number', $params['bank_card_number'])->first();
+
+        if ($bankCardNumber) {
+            return Tool::jsonResp([
+                'err' => 201,
+                'msg' => '该银行卡已存在'
+            ]);
+        }
+
+        $bank = BankCard::info($params['bank_card_number']);
+
+        if ($bank) {
+            $params['bank']           = $bank['bank'];
+            $params['bank_name']      = $bank['bankName'];
+            $params['card_type_name'] = $bank['cardTypeName'];
+            $params['bank_logo']       = $bank['bank'];
+        }
+
+        $params['is_verify']  = 0;
         $params['created_at'] = date('Y-m-d H:i:s', time());
         $params['updated_at'] = date('Y-m-d H:i:s', time());
 
@@ -91,6 +107,11 @@ class SkbBankCard extends Controller
                 'msg' => '添加失败'
             ]);
         }
+    }
+
+    public function bindAlipay(Request $req, SkbBankCardModel $bankcard)
+    {
+
     }
 
     /**
