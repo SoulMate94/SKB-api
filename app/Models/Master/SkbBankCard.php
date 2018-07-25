@@ -14,7 +14,7 @@ class SkbBankCard extends Model
     public function getBankCardListById($master_id)
     {
         $bankcard = DB::table($this->table)
-                    ->select('id', 'real_name', 'bank_name', 'bank_card_number', 'card_type_name')
+                    ->select('id','bank_logo', 'real_name', 'bank_name', 'bank_card_number', 'card_type_name')
                     ->whereMasterId($master_id)
                     ->get();
 

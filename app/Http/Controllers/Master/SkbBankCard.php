@@ -99,12 +99,14 @@ class SkbBankCard extends Controller
         if ($dat) {
             return Tool::jsonResp([
                 'err' => 0,
-                'msg' => '添加成功'
+                'msg' => '添加成功',
+                'dat' => $dat
             ]);
         } else {
             return Tool::jsonResp([
                 'err' => '404',
-                'msg' => '添加失败'
+                'msg' => '添加失败',
+                'dat' => $dat
             ]);
         }
     }
