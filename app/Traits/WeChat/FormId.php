@@ -88,8 +88,8 @@ class FormId
         return [
             'user_id'   => $user['id'],
             'open_id'   => $user['openid'],
-            'created_at'=> date('Y-m-d H:i:s'),
-            'updated_at'=> date('Y-m-d H:i:s')
+            'created_at'=> date('Y-m-d H:i:s', time()),
+            'updated_at'=> date('Y-m-d H:i:s', time())
         ];
     }
 }
