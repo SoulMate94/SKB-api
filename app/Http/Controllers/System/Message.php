@@ -6,13 +6,29 @@
 namespace App\Http\Controllers\System;
 
 use Illuminate\Http\Request;
-use App\Traits\{Tool, CURL, Session};
-use App\Traits\WeChat\{WeChatToken, FormId};
+use App\Traits\{Tool, WeChatPush, Session};
+use App\Traits\WeChat\FormId;
 
 class Message implements \ArrayAccess
 {
     public $lang = null;
     public $text = [];
+
+    public function adminPush(Request $req)
+    {
+        $req->post('user_id');
+        $opid = $req->post('open_id');
+
+        $dat    = json_decode($req->post('dat'), true);
+        $temp_id= config($req->post('template_id'));
+
+        $res = WeChatPush::push($opid, 'index', $temp_id, $dat);
+        if($res){
+            return Tool::jsonR(0, 'push success', $res);
+        }
+
+        return Tool::jsonR(-1, 'push fail', null);
+    }
 
     protected function path()
     {
@@ -109,41 +125,6 @@ class Message implements \ArrayAccess
         return false;
     }
 
-    protected function push($opid, $page, $temid, $dat)
-    {
-        $token  = new WeChatToken();
-        $token  = $token->getToken();
-
-        $fmid   = FormId::getFormId($opid);
-        if($fmid){
-            return Tool::jsonR(-2, 'we need form_id', null);
-        }
-
-        $url    = config('service_url.wechat.template_message.send_template_message').$token;
-
-        $data    = [];
-        foreach ($dat as $k => $v){
-            $data['keyword'.($k+1)]['value'] = $v;
-        }
-
-        $vars   = [
-            'touser'      => $opid,
-            'template_id' => $temid,
-            'page'        => $page,
-            'form_id'     => $fmid,
-            'data'        => $data,
-        ];
-
-        $curl   = new CURL();
-        $res    = $curl->curlPostSsl($url, json_encode($vars));
-
-        if ($res) {
-            return Tool::jsonR(0, 'success', [$res,$url]);
-        }
-
-        return Tool::jsonR(-1, 'failed', null);
-    }
-
     public function test(Session $ssn)
     {
         $user   = $ssn->get('user');
@@ -162,7 +143,12 @@ class Message implements \ArrayAccess
 
         $temp_id= 'uWnGobxPZ2lqFgpWvAI_ZrFpYFJZkYDEsqVGb86I_oU';
 
-        return $this->push($opid, 'index', $temp_id, $dat);
+        $res = WeChatPush::push($opid, 'index', $temp_id, $dat);
+        if($res){
+            return Tool::jsonR(0, 'push success', $res);
+        }
+
+        return Tool::jsonR(-1, 'push fail', null);
     }
 
     public function checkFormId(Session $ssn, FormId $formId)
