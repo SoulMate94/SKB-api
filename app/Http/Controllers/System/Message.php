@@ -163,6 +163,7 @@ class Message implements \ArrayAccess
 
     public function storageFormId(Request $req, FormId $formId)
     {
-        return Tool::jsonR(-1, 'test', $req->all());
+        $res = $formId->storageFormId(json_decode($req->post('form_id'), true));
+        return Tool::jsonR(-1, 'test', $res);
     }
 }

@@ -33,9 +33,9 @@ class FormId
         return false;
     }
 
-    public static function storageFormId($open_id, $form_ids)
+    public static function storageFormId($form_ids)
     {
-        $dat = self::getOpenId($open_id);
+        $dat = self::getOpenId();
 
         if($dat){
             $data= [];
@@ -45,26 +45,22 @@ class FormId
                 $data[]             = $dat;
             }
 
-            FormIds::insert($data);
+            $res = FormIds::insert($data);
 
-            return true;
+            return $res;
         }
 
         return false;
     }
 
-    protected static function getOpenId($open_id)
+    protected static function getOpenId()
     {
         $ssn    = new Session();
         $user   = $ssn->get('user');
 
-        if($open_id === $user['openid']){
-            return [
-                'user_id' => $user['id'],
-                'open_id' => $user['openid']
-            ];
-        }
-
-        return false;
+        return [
+            'user_id' => $user['id'],
+            'open_id' => $user['openid']
+        ];
     }
 }
