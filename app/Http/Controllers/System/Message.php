@@ -109,24 +109,26 @@ class Message implements \ArrayAccess
         return false;
     }
 
-    protected function push($opid, $fmid, $page, $temid, $dat)
+    protected function push($opid, $page, $temid, $dat)
     {
         $token  = new WeChatToken();
         $token  = $token->getToken();
 
+        $fmid   = FormId::getFormId($opid);
+
         $url    = config('service_url.wechat.template_message.send_template_message').$token;
 
-        $datt    = [];
+        $data    = [];
         foreach ($dat as $k => $v){
-            $datt['keyword'.($k+1)]['value'] = $v;
+            $data['keyword'.($k+1)]['value'] = $v;
         }
 
         $vars   = [
-            'touser'        => $opid,
-            'template_id'   => $temid,
-            'page'          => $page,
-            'form_id'       => $fmid,
-            'data'          => $datt,
+            'touser'      => $opid,
+            'template_id' => $temid,
+            'page'        => $page,
+            'form_id'     => $fmid,
+            'data'        => $data,
         ];
 
         $curl   = new CURL();
@@ -139,12 +141,11 @@ class Message implements \ArrayAccess
         return Tool::jsonR(-1, 'failed', null);
     }
 
-    public function test(Request $req, Session $ssn)
+    public function test(Session $ssn)
     {
         $user   = $ssn->get('user');
 
         $opid   = $user['openid'];
-        $fmid   = $req->get('form_id');
         $dat    = [
             '123456',
             '30元',
@@ -158,15 +159,25 @@ class Message implements \ArrayAccess
 
         $temp_id= 'uWnGobxPZ2lqFgpWvAI_ZrFpYFJZkYDEsqVGb86I_oU';
 
-        return $this->push($opid, $fmid, 'index', $temp_id, $dat);
+        return $this->push($opid, 'index', $temp_id, $dat);
     }
 
-    public function storageFormId(Request $req, FormId $formId, Session $ssn)
+    public function checkFormId(Session $ssn, FormId $formId)
     {
-        $res = $formId->storageFormId(json_decode($req->post('form_id'), true));
+        $user = $ssn->get('user');
+        $res  = $formId->checkFormId($user['openid']);
 
-        $user   = $ssn->get('user');
-        $res = $formId->getFormId($user['openid']);
+        if($res){
+            return Tool::jsonR(-2, 'we need form_id', $res);
+        }
+
+        return Tool::jsonR(0, 'form_id enough', null);
+    }
+
+    public function storageFormId(Request $req, FormId $formId)
+    {
+        $res  = $formId->storageFormId(json_decode($req->post('form_id'), true));
+
         return Tool::jsonR(-1, 'test', $res);
     }
 }

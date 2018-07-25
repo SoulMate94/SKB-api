@@ -13,7 +13,30 @@ use App\Traits\Session;
 
 class FormId
 {
-    public static function getFormId($open_id = null)
+    /**
+     * @param $open_id
+     * @return bool|int 当需要补充form_id时,将会返回所需form_id数量
+     */
+    public static function checkFormId($open_id)
+    {
+        $forms  = FormIds::where('expired_time', '<', time())
+                            ->delete();
+
+        $count  = FormIds::where([
+                            ['open_id', '=', $open_id],
+                            ['expired_time', '>', time()],
+                            ['is_use', '=', '0']
+                        ])
+                        ->count();
+
+        if($count<20){
+            return 20-$count;
+        }
+
+        return false;
+    }
+
+    public static function getFormId($open_id)
     {
         $formIds= new FormIds();
 
@@ -23,10 +46,14 @@ class FormId
                                 ['expired_time', '>', time()],
                                 ['is_use', '=', '0']
                             ])
-                            ->latest()
                             ->first();
 
         if($formId){
+            $formIds->where([
+                ['open_id', '=', $open_id],
+                ['form_id', '=', $formId->form_id],
+                ['is_use', '=', '0']
+            ])->update(['is_use' => 1]);
             return $formId->form_id;
         }
 
@@ -40,9 +67,9 @@ class FormId
         if($dat){
             $data= [];
             foreach ($form_ids as $v){
-                $dat['form_id']     = $v['formId'];
-                $dat['expired_time']= $v['expire'];
-                $data[]             = $dat;
+                $dat['form_id']      = $v['formId'];
+                $dat['expired_time'] = $v['expire'];
+                $data[]              = $dat;
             }
 
             $res = FormIds::insert($data);
@@ -61,8 +88,8 @@ class FormId
         return [
             'user_id'   => $user['id'],
             'open_id'   => $user['openid'],
-            'created_at'=> date('Y-m-d H:i:s'),
-            'updated_at'=> date('Y-m-d H:i:s')
+            'created_at'=> date('Y-m-d H:i:s', time()),
+            'updated_at'=> date('Y-m-d H:i:s', time())
         ];
     }
 }
