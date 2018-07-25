@@ -1,5 +1,5 @@
 <?php
-
+namespace App\Traits\WeChat;
 /**
  * 对公众平台发送给公众账号的消息加解密示例代码.
  *
@@ -7,10 +7,10 @@
  */
 
 
-include_once "sha1.php";
-include_once "xmlparse.php";
-include_once "pkcs7Encoder.php";
-include_once "errorCode.php";
+include_once "SHA1.php";
+include_once "XMLParse.php";
+include_once "PKCS7Encoder.php";
+include_once "ErrorCode.php";
 
 /**
  * 1.第三方回复加密消息给公众平台；

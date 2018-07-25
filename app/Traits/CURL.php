@@ -5,7 +5,7 @@
 
 namespace App\Traits;
 
-trait CURL
+class CURL
 {
     public function requestJsonApi(
         $uri,
@@ -72,7 +72,7 @@ trait CURL
      */
     public function curlPostSsl(
         string $url,
-        $vars,
+        $vars = '',
         int $second = 30,
         array $aHeader = []
     ) {
