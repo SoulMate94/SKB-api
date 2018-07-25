@@ -115,6 +115,9 @@ class Message implements \ArrayAccess
         $token  = $token->getToken();
 
         $fmid   = FormId::getFormId($opid);
+        if($fmid){
+            return Tool::jsonR(-2, 'we need form_id', null);
+        }
 
         $url    = config('service_url.wechat.template_message.send_template_message').$token;
 
