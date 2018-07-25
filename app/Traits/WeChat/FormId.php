@@ -45,8 +45,7 @@ class FormId
                                 ['open_id', '=', $open_id],
                                 ['expired_time', '>', time()],
                                 ['is_use', '=', '0']
-                            ])
-                            ->first();
+                            ])->first();
 
         if($formId){
             $formIds->where([

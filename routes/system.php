@@ -21,4 +21,7 @@ $app->group([
 
     //检查form_id数量,可用情况,清理无效form_id
     $app->get('/wechat/push/form_id/check', 'Message@checkFormId'); //by jizw
+
+    //admin端推送使用
+    $app->get('/wechat/push/admin', 'Message@adminPush'); //by jizw
 });

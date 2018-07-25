@@ -25,6 +25,11 @@ return [
         ],
         // 微信登录态
         'wxLoginExpires' => 7200,
-        'wxMessageToken' => 'abcdefgh'
+        'wxMessageToken' => 'abcdefgh',
+        'template_id'    => [
+            'orderPaymentSuccess'  => 'uWnGobxPZ2lqFgpWvAI_ZrFpYFJZkYDEsqVGb86I_oU',  //订单支付成功通知
+            'reviewDidNotPass'     => 'lOyr3DRwDWvSSxDcmgTb-YdwQzYvVPHmXsj8ODb9gxw',   //审核失败通知
+            'messageNotification'  => '23Vf0IWo4_5R_rLVcWDQv530W11755_h8bxamBa6lQA'   //通用消息通知
+        ]
     ]
 ];
