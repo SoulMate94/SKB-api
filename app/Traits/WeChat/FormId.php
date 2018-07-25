@@ -46,16 +46,14 @@ class FormId
                                 ['expired_time', '>', time()],
                                 ['is_use', '=', '0']
                             ])
-                            ->latest()
                             ->first();
 
         if($formId){
             $formIds->where([
-                    ['open_id', '=', $open_id],
-                    ['form_id', '=', $formId],
-                    ['is_use', '=', '0']
-                ])
-                ->update('is_use', 1);
+                ['open_id', '=', $open_id],
+                ['form_id', '=', $formId->form_id],
+                ['is_use', '=', '0']
+            ])->update(['is_use' => 1]);
             return $formId->form_id;
         }
 

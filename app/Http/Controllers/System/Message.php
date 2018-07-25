@@ -118,17 +118,17 @@ class Message implements \ArrayAccess
 
         $url    = config('service_url.wechat.template_message.send_template_message').$token;
 
-        $datt    = [];
+        $data    = [];
         foreach ($dat as $k => $v){
-            $datt['keyword'.($k+1)]['value'] = $v;
+            $data['keyword'.($k+1)]['value'] = $v;
         }
 
         $vars   = [
-            'touser'        => $opid,
-            'template_id'   => $temid,
-            'page'          => $page,
-            'form_id'       => $fmid,
-            'data'          => $datt,
+            'touser'      => $opid,
+            'template_id' => $temid,
+            'page'        => $page,
+            'form_id'     => $fmid,
+            'data'        => $data,
         ];
 
         $curl   = new CURL();
@@ -164,8 +164,8 @@ class Message implements \ArrayAccess
 
     public function checkFormId(Session $ssn, FormId $formId)
     {
-        $user   = $ssn->get('user');
-        $res    = $formId->checkFormId($user['openid']);
+        $user = $ssn->get('user');
+        $res  = $formId->checkFormId($user['openid']);
 
         if($res){
             return Tool::jsonR(-2, 'we need form_id', $res);
@@ -176,10 +176,10 @@ class Message implements \ArrayAccess
 
     public function storageFormId(Request $req, FormId $formId, Session $ssn)
     {
-        $res    = $formId->storageFormId(json_decode($req->post('form_id'), true));
+        $res  = $formId->storageFormId(json_decode($req->post('form_id'), true));
 
-        $user   = $ssn->get('user');
-        $res    = $formId->getFormId($user['openid']);
+        $user = $ssn->get('user');
+        $res  = $formId->getFormId($user['openid']);
         return Tool::jsonR(-1, 'test', $res);
     }
 }
