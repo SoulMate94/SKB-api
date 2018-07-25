@@ -10,6 +10,7 @@ namespace App\Traits\WeChat;
 
 use App\Models\System\SkbFormIdModel as FormIds;
 use App\Traits\Session;
+use Illuminate\Support\Facades\DB;
 
 class FormId
 {
@@ -19,10 +20,10 @@ class FormId
      */
     public static function checkFormId($open_id)
     {
-        $forms  = FormIds::select('id')
-                            ->where(['expired_time', '<', time()])
-                            ->get();
-        $forms->delete();
+        $forms  = DB::table('skb_system_form_id')
+                  ->where(['expired_time', '<', time()])
+                  ->delete();
+        dd($forms);
 
         $count  = FormIds::where([
                             ['open_id', '=', $open_id],
