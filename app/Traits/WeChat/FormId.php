@@ -21,7 +21,7 @@ class FormId
     public static function checkFormId($open_id)
     {
         $forms  = DB::table('skb_system_form_id')
-                  ->where(['expired_time', '<', time()])
+                  ->where('expired_time', '<', time())
                   ->delete();
         dd($forms);
 
