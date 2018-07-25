@@ -80,4 +80,39 @@ class SkbSuggestions extends Controller
             'dat' => $dat,
         ]);
     }
+
+    public function submitFeedbackUser(Session $ssn, Request $req)
+    {
+        $this->validate($req, [
+            'feedback_cate'    => 'required|numeric',
+            'feedback_type'    => 'required|numeric',
+            'feedback_content' => 'required',
+            'contacts'         => 'required',
+            'contacts_info'    => 'required',
+        ]);
+
+        $params = $req->all();
+        $params['uid'] = $ssn->get('user.id');
+
+        $dat = DB::table('skb_feedback_user')->insert([
+            'uid'              => $params['uid'],
+            'feedback_cate'    => $params['feedback_cate'],
+            'feedback_type'    => $params['feedback_type'],
+            'feedback_content' => $params['feedback_content'],
+            'feedback_img'     => $params['feedback_img'] ?? '',
+            'contacts'         => $params['contacts'],
+            'contacts_info'    => $params['contacts_info'],
+            'created_at'       => date('Y-m-d H:i:s', time()),
+            'updated_at'       => date('Y-m-d H:i:s', time()),
+        ]);
+
+        $err = $dat ? 0 : 404;
+        $msg = $dat ? 'success' : 'fails';
+
+        return Tool::jsonResp([
+            'err' => $err,
+            'msg' => $msg,
+            'dat' => $dat,
+        ]);
+    }
 }
