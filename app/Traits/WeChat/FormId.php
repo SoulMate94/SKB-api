@@ -40,8 +40,8 @@ class FormId
         if($dat){
             $data= [];
             foreach ($form_ids as $v){
-                $dat['form_id']     = $v['form_id'];
-                $dat['expired_time']= $v['expired_time'];
+                $dat['form_id']     = $v['formId'];
+                $dat['expired_time']= $v['expire'];
                 $data[]             = $dat;
             }
 
