@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class SkbSuggestions extends Controller
 {
     /**
-     * 提交意见反馈
+     * 意见反馈V1
      * @param Request $req
      * @return $this
      */
@@ -50,7 +50,7 @@ class SkbSuggestions extends Controller
     }
 
     /**
-     * 提交意见反馈, 只存储,无任何操作
+     * 意见反馈V2, 只存储,无任何操作
      * @param Session $ssn
      * @param Request $req
      * @return $this
@@ -67,6 +67,47 @@ class SkbSuggestions extends Controller
         $dat = DB::table('skb_feedback')->insert([
             'uid'              => $uid,
             'feedback_content' => $content,
+            'created_at'       => date('Y-m-d H:i:s', time()),
+            'updated_at'       => date('Y-m-d H:i:s', time()),
+        ]);
+
+        $err = $dat ? 0 : 404;
+        $msg = $dat ? 'success' : 'fails';
+
+        return Tool::jsonResp([
+            'err' => $err,
+            'msg' => $msg,
+            'dat' => $dat,
+        ]);
+    }
+
+    /**
+     * 意见反馈V3
+     * @param Session $ssn
+     * @param Request $req
+     * @return $this
+     */
+    public function submitFeedbackUser(Session $ssn, Request $req)
+    {
+        $this->validate($req, [
+            'feedback_cate'    => 'required|numeric',
+            'feedback_type'    => 'required|numeric',
+            'feedback_content' => 'required',
+            'contacts'         => 'required',
+            'contacts_info'    => 'required',
+        ]);
+
+        $params = $req->all();
+        $params['uid'] = $ssn->get('user.id');
+
+        $dat = DB::table('skb_feedback_user')->insert([
+            'uid'              => $params['uid'],
+            'feedback_cate'    => $params['feedback_cate'],
+            'feedback_type'    => $params['feedback_type'],
+            'feedback_content' => $params['feedback_content'],
+            'feedback_img'     => $params['feedback_img'] ?? '',
+            'contacts'         => $params['contacts'],
+            'contacts_info'    => $params['contacts_info'],
             'created_at'       => date('Y-m-d H:i:s', time()),
             'updated_at'       => date('Y-m-d H:i:s', time()),
         ]);
