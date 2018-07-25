@@ -98,19 +98,13 @@ class SkbSuggestions extends Controller
         ]);
 
         $params = $req->all();
-        $params['uid'] = $ssn->get('user.id');
 
-        $dat = DB::table('skb_feedback_user')->insert([
-            'uid'              => $params['uid'],
-            'feedback_cate'    => $params['feedback_cate'],
-            'feedback_type'    => $params['feedback_type'],
-            'feedback_content' => $params['feedback_content'],
-            'feedback_img'     => $params['feedback_img'] ?? '',
-            'contacts'         => $params['contacts'],
-            'contacts_info'    => $params['contacts_info'],
-            'created_at'       => date('Y-m-d H:i:s', time()),
-            'updated_at'       => date('Y-m-d H:i:s', time()),
-        ]);
+        $params['uid'] = $ssn->get('user.id');
+        $params['feedback_img'] = $req->get('feedback_img') ?? '';
+        $params['created_at']   = date('Y-m-d H:i:s', time());
+        $params['updated_at']   = date('Y-m-d H:i:s', time());
+
+        $dat = DB::table('skb_feedback_user')->insert($params);
 
         $err = $dat ? 0 : 404;
         $msg = $dat ? 'success' : 'fails';
