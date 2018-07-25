@@ -19,7 +19,7 @@ class FormId
      */
     public static function checkFormId($open_id)
     {
-        FormIds::deleted()->where(['expired_time', '<', time()]);
+        FormIds::where(['expired_time', '<', time()])->deleted();
 
         $count  = FormIds::where([
                             ['open_id', '=', $open_id],
