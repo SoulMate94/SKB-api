@@ -136,6 +136,12 @@ class SkbBankCard extends Controller
         ]);
     }
 
+    /**
+     * 绑定支付宝
+     * @param Request $req
+     * @param SkbAlipayModel $ali
+     * @return $this
+     */
     public function bindAlipay(Request $req, SkbAlipayModel $ali)
     {
         $this->validate($req, [
