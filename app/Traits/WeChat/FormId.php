@@ -21,7 +21,6 @@ class FormId
     {
         $forms  = FormIds::where('expired_time', '<', time())
                             ->delete();
-        dd($forms);
 
         $count  = FormIds::where([
                             ['open_id', '=', $open_id],
