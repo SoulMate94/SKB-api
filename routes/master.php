@@ -7,6 +7,8 @@ $app->group([
     $app->get('get_bank_card_list', 'SkbBankCard@bankCardList');  // by caoxl
     // 绑定银行卡
     $app->post('bind_bankcard', 'SkbBankCard@bindBankCard');  // by caoxl
+    // 支付宝账号
+    $app->get('get_alipay_list', 'SkbBankCard@alipayList');  // by caoxl
     // 绑定支付宝
     $app->post('bind_alipay', 'SkbBankCard@bindAlipay');  // by caoxl
 

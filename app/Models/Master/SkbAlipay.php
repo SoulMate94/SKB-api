@@ -5,23 +5,23 @@ namespace App\Models\Master;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class SkbBankCard extends Model
+class SkbAlipay extends Model
 {
-    protected $table      = 'skb_bank_card';
+    protected $table      = 'skb_alipay';
     protected $primaryKey = 'id';
     public $timestamps    = false;
 
-    public function getBankCardListById($master_id)
+    public function getAlipayById($master_id)
     {
         $bankcard = DB::table($this->table)
-                    ->select('id','bank_logo', 'real_name', 'bank_name', 'bank_card_number', 'card_type_name')
+                    ->select('id', 'real_name')
                     ->whereMasterId($master_id)
                     ->get();
 
         return $bankcard;
     }
 
-    public function insertBankCard($params)
+    public function insertAlipay($params)
     {
         $res = DB::table($this->table)->insertGetId($params);
 

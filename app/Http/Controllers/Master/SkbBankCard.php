@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Master;
 
 
 use App\Http\Controllers\Controller,
-    App\Traits\Tool,
-    App\Models\Master\SkbBankCard as SkbBankCardModel;
+    App\Traits\Tool;
+use App\Models\Master\SkbBankCard as SkbBankCardModel;
+use App\Models\Master\SkbAlipay as SkbAlipayModel;
 use Illuminate\Http\Request,
     Illuminate\Support\Facades\Validator;
 use Zhuzhichao\BankCardInfo\BankCard;
@@ -36,7 +37,6 @@ class SkbBankCard extends Controller
             'msg' => $msg,
             'dat' => $dat,
         ]);
-
     }
 
     /**
@@ -99,18 +99,72 @@ class SkbBankCard extends Controller
         if ($dat) {
             return Tool::jsonResp([
                 'err' => 0,
-                'msg' => '添加成功'
+                'msg' => '添加成功',
+                'dat' => $dat
             ]);
         } else {
             return Tool::jsonResp([
                 'err' => '404',
-                'msg' => '添加失败'
+                'msg' => '添加失败',
+                'dat' => $dat
             ]);
         }
     }
 
-    public function bindAlipay(Request $req, SkbBankCardModel $bankcard)
+    /**
+     * 获取支付宝账号
+     * @param Request $req
+     * @return $this
+     */
+    public function alipayList(Request $req)
     {
+        $this->validate($req, [
+            'master_id' => 'required|numeric',
+        ]);
+
+        $master_id = $req->get('master_id');
+        $bankcard  = new SkbAlipayModel();
+
+        $dat = $bankcard->whereMasterId($master_id)->first();
+        $err = $dat ? 0 : 404;
+        $msg = $dat ? 'success' : 'fails';
+
+        return Tool::jsonResp([
+            'err' => $err,
+            'msg' => $msg,
+            'dat' => $dat,
+        ]);
+    }
+
+    public function bindAlipay(Request $req, SkbAlipayModel $ali)
+    {
+        $this->validate($req, [
+            'master_id'      => 'required|numeric',
+            'real_name'      => 'required',
+            'alipay_account' => 'required',
+        ]);
+
+        $params = $req->all();
+
+        $params['is_verify']  = 0;
+        $params['created_at'] = date('Y-m-d H:i:s', time());
+        $params['updated_at'] = date('Y-m-d H:i:s', time());
+
+        $dat = $ali->insertAlipay($params);
+
+        if ($dat) {
+            return Tool::jsonResp([
+                'err' => 0,
+                'msg' => '添加成功',
+                'dat' => $dat
+            ]);
+        } else {
+            return Tool::jsonResp([
+                'err' => '404',
+                'msg' => '添加失败',
+                'dat' => $dat
+            ]);
+        }
 
     }
 
