@@ -29,8 +29,8 @@ class FormId
                         ])
                         ->count();
 
-        if($count<100){
-            return 100-$count;
+        if($count<20){
+            return 20-$count;
         }
 
         return false;
