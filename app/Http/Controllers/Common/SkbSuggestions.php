@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class SkbSuggestions extends Controller
 {
     /**
-     * 提交意见反馈
+     * 意见反馈V1
      * @param Request $req
      * @return $this
      */
@@ -50,7 +50,7 @@ class SkbSuggestions extends Controller
     }
 
     /**
-     * 提交意见反馈, 只存储,无任何操作
+     * 意见反馈V2, 只存储,无任何操作
      * @param Session $ssn
      * @param Request $req
      * @return $this
@@ -81,6 +81,12 @@ class SkbSuggestions extends Controller
         ]);
     }
 
+    /**
+     * 意见反馈V3
+     * @param Session $ssn
+     * @param Request $req
+     * @return $this
+     */
     public function submitFeedbackUser(Session $ssn, Request $req)
     {
         $this->validate($req, [
