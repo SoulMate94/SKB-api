@@ -1,4 +1,5 @@
 <?php
+namespace App\Traits\WeChat;
 
 /**
  * error code 说明.
@@ -31,5 +32,3 @@ class ErrorCode
 	public static $DecodeBase64Error = -40010;
 	public static $GenReturnXmlError = -40011;
 }
-
-?>

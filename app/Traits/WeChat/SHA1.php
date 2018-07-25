@@ -1,6 +1,7 @@
 <?php
+namespace App\Traits\WeChat;
 
-include_once "errorCode.php";
+use App\Traits\WeChat\ErrorCode;
 
 /**
  * SHA1 class
@@ -31,6 +32,3 @@ class SHA1
 	}
 
 }
-
-
-?>

@@ -1,5 +1,7 @@
 <?php
-include_once "errorCode.php";
+namespace App\Traits\WeChat;
+
+use App\Traits\WeChat\ErrorCode;
 
 /**
  * XMLParse class
@@ -49,6 +51,3 @@ class XMLParse
 	}
 
 }
-
-
-?>

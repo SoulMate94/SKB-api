@@ -10,6 +10,12 @@ $app->group([
     //测试消息接口,用完即删
     $app->get('/test/message', 'Message@test');  // by jizw
 
+//    对接微信服务器校验用接口,用完即换
+    $app->get('/wechat/service', 'WeChatPushServerCheck@getWechatServiceCheck');  // by jizw
+
     //对接微信服务器
-    $app->get('/wechat/service/check', 'WeChatPushServerCheck@getWechatServiceCheck');  // by jizw
+//    $app->get('/wechat/service', 'WeChatPushServerCheck@getWechatServiceCheck');  // by jizw
+
+    //接收存储用户form_id专用接口
+    $app->post('/wechat/push/form_id/storageFormId', 'Message@storageFormId'); //by jizw
 });
