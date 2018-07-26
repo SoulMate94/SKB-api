@@ -20,7 +20,7 @@ class Message implements \ArrayAccess
         $opid = $req->post('open_id');
 
         $dat    = json_decode($req->post('dat'), true);
-        $temp_id= config($req->post('template_id'));
+        $temp_id= config('services.wechat.template_id.'.$req->post('template_id'));
 
         $res = WeChatPush::push($opid, 'index', $temp_id, $dat);
         if($res){
