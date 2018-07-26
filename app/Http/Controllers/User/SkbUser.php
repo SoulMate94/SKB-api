@@ -128,8 +128,9 @@ class SkbUser extends Controller
         }
 
         return Tool::jsonResp([
-            'err'   =>  -1,
-            'dat'   =>  'you 挂了!!!!'
+            'err' => -1,
+            'msg' => 'you 挂了!!!!',
+            'dat' => null
         ]);
     }
 }
