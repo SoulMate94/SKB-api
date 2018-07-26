@@ -26,7 +26,7 @@ class SkbBankCard extends Controller
 
         $master_id = $req->get('master_id');
 
-        $bankcard = new SkbBankCardModel();
+        $bankcard  = new SkbBankCardModel();
 
         $dat = $bankcard->getBankCardListById($master_id);
         $err = $dat ? 0 : 404;
