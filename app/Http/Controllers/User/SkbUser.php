@@ -87,7 +87,7 @@ class SkbUser extends Controller
                 'updated_at'    =>  date('Y-m-d H:i:s')
             ];
 
-            $user[] = ['id' => $users->insertGetId($user)];
+            $user['id'] =$users->insertGetId($user);
 
             if (!$user['id']) return Tool::jsonResp([
                 'err' => -1,
