@@ -16,6 +16,7 @@ $app->get('/test_jwt', function () use ($app) {
     return config('jwt');
 });
 
+//登录接口
 $app->get('weapp/user','User\SkbUser@index');
 $app->get('weapp/login','User\SkbUser@login');
 

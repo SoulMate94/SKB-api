@@ -11,7 +11,7 @@ $app->group([
     $app->get('/test/message', 'Message@test');  // by jizw
 
     // 对接微信服务器校验用接口,用完即换
-    $app->get('/wechat/service', 'WeChatPushServerCheck@getWechatServiceCheck');  // by jizw
+//    $app->get('/wechat/service', 'WeChatPushServerCheck@getWechatServiceCheck');  // by jizw
 
     // 对接微信服务器
     // $app->get('/wechat/service', 'WeChatPushServerCheck@getWechatServiceCheck');  // by jizw

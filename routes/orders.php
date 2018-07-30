@@ -12,8 +12,8 @@ $app->group([
     // 生成订单
     $app->post('order_create', 'SkbOrder@createOrder'); // by jizw
 
-    // 查看订单
-    $app->post('order_list', 'SkbOrder@orderList'); // by jizw
+    // 师傅获取订单订单
+    $app->get('order_list', 'SkbOrder@getOrders'); // by jizw
 
     // 取消订单
     $app->post('order_cancel', 'SkbOrder@cancelOrder'); // by jizw
@@ -22,5 +22,5 @@ $app->group([
     $app->post('order_revoke', 'SkbOrder@revokeOrder'); // by jizw
 
     // 订单状态
-    $app->get('order_status', 'SkbOrder@statusOrder'); //by jizw
+    $app->get('order_status', 'SkbOrder@statusOrder');
 });

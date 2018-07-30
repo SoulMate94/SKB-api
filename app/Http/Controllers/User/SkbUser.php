@@ -62,10 +62,10 @@ class SkbUser extends Controller
             $users  = new SkbUsers();
 
             $user   = $users->where('openid','=',$result['userinfo']['userinfo']->openId)
-                            ->first()
-                            ->toArray();
+                            ->first();
 
             if($user){
+                $user->toArray();
                 $ssn->set('user' , $user);
 
                 return Tool::jsonResp([
