@@ -115,15 +115,14 @@ class SkbUser extends Controller
 
     public function selectRole(Request $req, Session $ssn, SkbUsers $users)
     {
-        $user = $ssn->get('user');
-        $role = $req->post('role');
+        $user  = $ssn->get('user');
+        $role  = $req->post('role');
 
-        $role = $users->select('role')
+        $yrole = $users->select('role')
                         ->where(['id', $user['id']])
-                        ->first()
-                        ->toArray();
+                        ->first();
 
-        if($role['role'] == 0){
+        if($yrole->role == 0){
             $res = $users->update(['role', $role])
                             ->where(['id', $user['id']]);
 
