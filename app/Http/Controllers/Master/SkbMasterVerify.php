@@ -197,6 +197,8 @@ class SkbMasterVerify extends Controller
         $params['mid']         = $ssn->get('user')['id'];
         $params['id_card_img'] = Tool::uploadFile($req,'id_card_img', 'masterVerify');
 
+        var_dump($params['mid']);die;
+
         $dat = $verify->insertVerify($params);
 
         if ($dat) {
