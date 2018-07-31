@@ -22,7 +22,6 @@ class Verify extends Model
 
         $params = $this->dealData($params);
 
-        var_dump($params);die;
         return $this->insertGetId($params);
     }
 
