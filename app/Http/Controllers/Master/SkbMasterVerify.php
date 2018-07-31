@@ -132,7 +132,6 @@ class SkbMasterVerify extends Controller
             'service_end_time'  =>  'required',
         ];
 
-        var_dump(date('Y-m-d H:i:s', strtotime($params['service_end_time'])));die;
         $params['service_sta_time'] = strtotime($params['service_sta_time']);
         $params['service_end_time'] = strtotime($params['service_end_time']);
 
