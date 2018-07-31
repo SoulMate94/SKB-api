@@ -73,10 +73,7 @@ class SkbMasterVerify extends Controller
             'work_area',
             'work_year',
             'product_type_id',
-            'service_sta_time',
-            'service_end_time',
             'failure_reason',
-            'created_at'
         ];
         $dat = $verify->select($select)
                 ->where([
