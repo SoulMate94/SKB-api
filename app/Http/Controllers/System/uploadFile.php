@@ -8,8 +8,8 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Http\Controllers\Controller,
-    App\Traits\Tool;
+use App\Http\Controllers\Controller;
+use App\Traits\{Tool, Session};
 use Illuminate\Http\Request;
 
 class uploadFile extends Controller
@@ -58,4 +58,32 @@ class uploadFile extends Controller
         return Tool::jsonR(0,'success',$path);
     }
 
+    public function masterVerifyUploadImage(Request $req, Session $ssn)
+    {
+        if($ssn->get('user')){
+            if(!$req->hasFile('skbPublicFile')) {
+                return Tool::jsonR(-1,'File error', null);
+            }
+            $files = $req->file('skbPublicFile');
+
+            $fileName = 'skb_'
+                .time()
+                .rand(1000, 9999)
+                .'.'
+                .$files->getClientOriginalExtension();
+
+            $folder_tmp = date('Ymd');
+            if($files->move('/var/www/skb/skbAdmin/public/uploads/masterVerify'
+                            .$folder_tmp, $fileName)){
+                $path   = '/uploads/'
+                    .$folder_tmp
+                    .'/'
+                    .$fileName;
+
+                return Tool::jsonR(0,'success',$path);
+            }
+        }
+
+        return Tool::jsonR(-1, 'you need login', null);
+    }
 }

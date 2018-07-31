@@ -24,4 +24,8 @@ $app->group([
 
     // admin端推送使用
     $app->post('/wechat/push/admin', 'Message@adminPush');  //by jizw
+
+    // 师傅认证图片提交
+    $app->post('post_master_verify_upload_image', 'uploadFile@masterVerifyUploadImage'); // by jizw
+
 });
