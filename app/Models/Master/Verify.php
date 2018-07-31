@@ -80,6 +80,7 @@ class Verify extends Model
 
         $res = DB::table('skb_users')->where([['id','=',$mid],['role','>',1]]);
 
+        var_dump($res);die;
         if ($res) {
             unset($res);
             $res = $this->where([['mid', $mid],['is_del', 0]])->first();
