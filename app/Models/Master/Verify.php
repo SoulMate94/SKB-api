@@ -48,9 +48,9 @@ class Verify extends Model
         $params['verify_status']    =   1;
         $params['updated_at']       =   date('Y-m-d H:i:s');
 
-        $params['work_area']        =   json_encode($params['work_area']);
-        $params['product_type_id']  =   json_encode($params['product_type_id']);
-        $params['service_type_id']  =   json_encode($params['service_type_id']);
+        $params['work_area']        = json_encode($params['work_area']);
+        $params['product_type_id']  = json_encode($params['product_type_id']);
+        $params['service_type_id']  = '[1,2,3,4,5]';
         $params['service_sta_time'] = strtotime($params['service_sta_time']);
         $params['service_end_time'] = strtotime($params['service_end_time']);
 
