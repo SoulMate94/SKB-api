@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use QCloud_WeApp_SDK\Conf as Config,
     QCloud_WeApp_SDK\Auth\LoginService as LoginService,
     QCloud_WeApp_SDK\Constants as Constants;
+use Symfony\Component\HttpKernel\HttpCache\Ssi;
 
 class SkbUser extends Controller
 {
@@ -110,6 +111,28 @@ class SkbUser extends Controller
             'err' => -1,
             'msg' => $result['error']
         ]);
+    }
+
+    public function selectRole(Request $req, Session $ssn, SkbUsers $users)
+    {
+        $user = $ssn->get('user');
+        $role = $req->post('role');
+
+        $role = $users->select('role')
+                        ->where(['id', $user['id']])
+                        ->first()
+                        ->toArray();
+
+        if($role['role'] == 0){
+            $res = $users->update(['role', $role])
+                            ->where(['id', $user['id']]);
+
+            if($res)return Tool::jsonR(0, 'change success', null);
+
+            return Tool::jsonR(404, '服务器开小差了', null);
+        }
+
+        return Tool::jsonR(-1, 'user role can`t do it', null);
     }
 
     public function testLogin(Request $req, Session $ssn)

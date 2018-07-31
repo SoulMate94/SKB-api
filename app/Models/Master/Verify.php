@@ -14,7 +14,6 @@ class Verify extends Model
     //插入master verify数据
     public function insertVerify($params)
     {
-        var_dump($params);die;
         if((!$this->checkMaster($params)) || $this->checkVerify($params)){
             return false;
         }
