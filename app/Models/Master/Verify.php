@@ -51,6 +51,8 @@ class Verify extends Model
         $params['work_area']        =   json_encode($params['work_area']);
         $params['product_type_id']  =   json_encode($params['product_type_id']);
         $params['service_type_id']  =   json_encode($params['service_type_id']);
+        $params['service_sta_time'] = strtotime($params['service_sta_time']);
+        $params['service_end_time'] = strtotime($params['service_end_time']);
 
         if(isset($params['id_card_img'])) {
             $params['id_card_img']  =   json_encode($params['id_card_img']);
