@@ -6,7 +6,8 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller,
     App\Traits\Tool,
     App\Traits\Session,
-    App\Models\Master\Verify as masterVerify;
+    App\Models\Master\Verify as masterVerify,
+    App\Models\User\SkbUsersModel;
 use Illuminate\Http\Request,
     Illuminate\Support\Facades\Validator;
 
@@ -62,7 +63,7 @@ class SkbMasterVerify extends Controller
      * @param Request $req
      * @return $this
      */
-    public function verifyInfo(Session $ssn, masterVerify $verify)
+    public function verifyInfo(Session $ssn, masterVerify $verify, SkbUsersModel $users)
     {
         $master_id = $ssn->get('user')['id'];
 
@@ -84,7 +85,11 @@ class SkbMasterVerify extends Controller
                 ->whereIn('verify_status', [1, -1])
                 ->first();
 
-        if(!$dat) {
+        $users     = $users->select(['username', 'mobile'])
+                            ->where('id', $master_id)
+                            ->first();
+
+        if(!$dat || !$users) {
             return Tool::jsonResp([
                 'err' => -1,
                 'msg' => '没有提交认证',
@@ -92,6 +97,7 @@ class SkbMasterVerify extends Controller
             ]);
         }
 
+        $dat               = array_merge($users->toArray(),$dat->toArray());
         $dat['created_at'] = strtotime($dat['created_at']);
 
         return Tool::jsonResp([
