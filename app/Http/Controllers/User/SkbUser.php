@@ -79,12 +79,13 @@ class SkbUser extends Controller
 
             //注册用户 by jizw
             $user = [
-                'username'      =>  '',
-                'openid'        =>  $result['userinfo']['userinfo']->openId,
-                'nickname'      =>  $result['userinfo']['userinfo']->nickName,
-                'avatar'        =>  $result['userinfo']['userinfo']->avatarUrl,
-                'created_at'    =>  date('Y-m-d H:i:s'),
-                'updated_at'    =>  date('Y-m-d H:i:s')
+                'username'   => '',
+                'openid'     => $result['userinfo']['userinfo']->openId,
+                'nickname'   => $result['userinfo']['userinfo']->nickName,
+                'avatar'     => $result['userinfo']['userinfo']->avatarUrl,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+                'role'       => 0
             ];
 
             $user['id'] =$users->insertGetId($user);
@@ -98,7 +99,10 @@ class SkbUser extends Controller
 
             return Tool::jsonResp([
                 'err' => 0,
-                'dat' => $user
+                'dat' => [
+                        $user,
+                        'ssn' => session_id()
+                    ]
             ]);
         }
 
