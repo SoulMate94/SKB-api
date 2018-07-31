@@ -171,14 +171,14 @@ class SkbMasterVerify extends Controller
 
         $rules  =  [
             'username'         =>  'required|string',
-//            'id_number'         =>  [
-//                'required',
-//                'regex:/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}(\d|x|X)$/',
-//            ],
-//            'mobile'            =>  [
-//                'required',
-//                'regex:/0?(13|14|15|17|18|19)[0-9]{9}/'
-//            ],
+            'id_number'         =>  [
+                'required',
+                'regex:/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}(\d|x|X)$/',
+            ],
+            'mobile'            =>  [
+                'required',
+                'regex:/0?(13|14|15|17|18|19)[0-9]{9}/'
+            ],
             'work_year'         =>  'required|numeric',
             'work_area'         =>  'required|array',
             'id_card_img'       =>  'required|array',
