@@ -183,8 +183,8 @@ class SkbMasterVerify extends Controller
             'work_area'         =>  'required|array',
             'id_card_img'       =>  'required|array',
             'product_type_id'   =>  'required|array',
-            'service_sta_time'  =>  'required|numeric',
-            'service_end_time'  =>  'required|numeric',
+            'service_sta_time'  =>  'required',
+            'service_end_time'  =>  'required',
         ];
 
         if ($msg = $this->check($params, $rules)) {
@@ -194,8 +194,10 @@ class SkbMasterVerify extends Controller
             ]);
         }
 
-        $params['mid']          =   $ssn->get('user')['id'];
-        $params['id_card_img']  =   Tool::uploadFile($req,'id_card_img', 'masterVerify');
+        $params['mid']              =   $ssn->get('user')['id'];
+        $params['id_card_img']      =   Tool::uploadFile($req,'id_card_img', 'masterVerify');
+        $params['service_sta_time'] = strtotime($params['service_sta_time']);
+        $params['service_end_time'] = strtotime($params['service_end_time']);
 
         $dat = $verify->insertVerify($params);
 
