@@ -140,9 +140,6 @@ class SkbMasterVerify extends Controller
         }
 
         $params['mid']              =   $ssn->get('user')['id'];
-        if (isset($params['id_card_img'])) {
-            $params['id_card_img']  =   $this->masterVerifyFile($req);
-        }
 
         $dat = $verify->updateVerify($params);
 
