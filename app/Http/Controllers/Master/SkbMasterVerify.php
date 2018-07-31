@@ -159,9 +159,20 @@ class SkbMasterVerify extends Controller
     /**
      * 申诉
      */
-    public function appeal()
+    public function appeal(Session $ssn, masterVerify $verify, Request $req)
     {
-        // TODO
+        $appeal = $req->post('appeal');
+        $user   = $ssn->get('user');
+
+        if($appeal && $user) {
+            $res = $verify->where('mid', $user['id'])
+                            ->first()
+                            ->update(['appeal'=>$appeal]);
+
+            if($res) return Tool::jsonR(0, 'appeal success', $res);
+
+            return Tool::jsonR(404, 'service is wrong', null);
+        }
     }
 
     /**
