@@ -30,7 +30,7 @@ class SkbMasterVerify extends Controller
             return Tool::jsonResp([
                 'err' => 0,
                 'msg' => '认证成功',
-                'dat' => $dat,
+                'dat' => null,
             ]);
         }
 
