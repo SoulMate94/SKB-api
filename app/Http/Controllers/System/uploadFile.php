@@ -61,10 +61,10 @@ class uploadFile extends Controller
     public function masterVerifyUploadImage(Request $req, Session $ssn)
     {
         if($ssn->get('user')){
-            if(!$req->hasFile('skbPublicFile')) {
+            if(!$req->hasFile('skbMasterUploadImage')) {
                 return Tool::jsonR(-1,'File error', null);
             }
-            $files = $req->file('skbPublicFile');
+            $files = $req->file('skbMasterUploadImage');
 
             $fileName = 'skb_'
                 .time()
