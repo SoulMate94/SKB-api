@@ -96,7 +96,6 @@ class SkbMasterVerify extends Controller
         }
 
         $dat               = array_merge($users->toArray(),$dat->toArray());
-        $dat['created_at'] = strtotime($dat['created_at']);
 
         return Tool::jsonResp([
             'err' => 0,
