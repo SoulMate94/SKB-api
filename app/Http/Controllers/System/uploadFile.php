@@ -75,7 +75,7 @@ class uploadFile extends Controller
             $folder_tmp = date('Ymd');
             if($files->move('/var/www/skb/skbAdmin/public/uploads/masterVerify/'
                             .$folder_tmp, $fileName)){
-                $path   = '/uploads/'
+                $path   = 'uploads/'
                     .$folder_tmp
                     .'/'
                     .$fileName;
