@@ -14,7 +14,6 @@ class Verify extends Model
     //插入master verify数据
     public function insertVerify($params)
     {
-        var_dump($this->checkMaster($params));die;
         if((!$this->checkMaster($params)) || $this->checkVerify($params)){
             return false;
         }
@@ -79,12 +78,6 @@ class Verify extends Model
         $mid = $params['mid'];
 
         $res = DB::table('skb_users')->where([['id','=',$mid],['role','>',1]]);
-
-        var_dump($res);die;
-        if ($res) {
-            unset($res);
-            $res = $this->where([['mid', $mid],['is_del', 0]])->first();
-        }
 
         return $res ? true : false;
     }
