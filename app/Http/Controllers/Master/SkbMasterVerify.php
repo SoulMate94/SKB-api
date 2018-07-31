@@ -132,9 +132,6 @@ class SkbMasterVerify extends Controller
             'service_end_time'  =>  'required',
         ];
 
-        $params['service_sta_time'] = strtotime($params['service_sta_time']);
-        $params['service_end_time'] = strtotime($params['service_end_time']);
-
         if ($msg = $this->check($params, $rules)) {
             return Tool::jsonResp([
                 'err' => '403',
@@ -151,12 +148,12 @@ class SkbMasterVerify extends Controller
                 'err' => 0,
                 'msg' => '申请修改成功'
             ]);
-        } else {
-            return Tool::jsonResp([
+        }
+
+        return Tool::jsonResp([
                 'err' => '404',
                 'msg' => '申请修改失败'
             ]);
-        }
     }
 
     /**
