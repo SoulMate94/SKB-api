@@ -64,6 +64,7 @@ class Verify extends Model
         unset($params['username']);
         unset($params['mobile']);
 
+        var_dump($params);die;
         DB::table('skb_users')->where('id',$params['mid'])->update($skb_user);
 
         return $params;
