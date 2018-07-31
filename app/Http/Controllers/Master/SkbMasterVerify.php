@@ -42,6 +42,14 @@ class SkbMasterVerify extends Controller
             ]);
         }
 
+        if($dat['verify_status'] === -1) {
+            return Tool::jsonResp([
+                'err' => -2,
+                'msg' => '认证失败',
+                'dat' => null
+            ]);
+        }
+
         return Tool::jsonResp([
             'err' => -1,
             'msg' => '你还没有认证',
