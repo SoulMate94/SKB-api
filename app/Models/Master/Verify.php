@@ -14,6 +14,7 @@ class Verify extends Model
     //插入master verify数据
     public function insertVerify($params)
     {
+        var_dump($params);die;
         if((!$this->checkMaster($params)) || $this->checkVerify($params)){
             return false;
         }
@@ -64,7 +65,6 @@ class Verify extends Model
         unset($params['username']);
         unset($params['mobile']);
 
-        var_dump($params);die;
         DB::table('skb_users')->where('id',$params['mid'])->update($skb_user);
 
         return $params;
