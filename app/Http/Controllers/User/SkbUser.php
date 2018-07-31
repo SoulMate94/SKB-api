@@ -123,8 +123,8 @@ class SkbUser extends Controller
                         ->first();
 
         if($yrole->role == 0){
-            $res = $users->update(['role', $role])
-                            ->where('id', $user['id']);
+            $res = $users->where('id', $user['id'])
+                            ->update(['role'=> $role]);
 
             if($res)return Tool::jsonR(0, 'change success', null);
 
