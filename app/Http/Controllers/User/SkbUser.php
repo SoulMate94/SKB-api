@@ -61,7 +61,7 @@ class SkbUser extends Controller
 
             $users  = new SkbUsers();
 
-            $user   = $users->where('openid','=',$result['userinfo']['userinfo']->openId)
+            $user   = $users->where('openid', '=', $result['userinfo']['userinfo']->openId)
                             ->first();
 
             if($user){

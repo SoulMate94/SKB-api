@@ -69,7 +69,11 @@ class SkbMasterVerify extends Controller
             'created_at'
         ];
         $dat = $verify->select($select)
-                ->where('mid',$master_id)
+                ->where([
+                    ['mid', $master_id],
+                    ['is_del', 0]
+                ])
+                ->whereIn('verify_status', [1, -1])
                 ->first();
 
         if(!$dat) {
