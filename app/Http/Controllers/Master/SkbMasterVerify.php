@@ -139,7 +139,7 @@ class SkbMasterVerify extends Controller
             ]);
         }
 
-        $params['mid']              =   $ssn->get('user')['id'];
+        $params['mid'] = $ssn->get('user')['id'];
 
         $dat = $verify->updateVerify($params);
 
