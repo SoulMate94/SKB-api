@@ -119,12 +119,12 @@ class SkbUser extends Controller
         $role  = $req->post('role');
 
         $yrole = $users->select('role')
-                        ->where(['id', $user['id']])
+                        ->where('id', $user['id'])
                         ->first();
 
         if($yrole->role == 0){
             $res = $users->update(['role', $role])
-                            ->where(['id', $user['id']]);
+                            ->where('id', $user['id']);
 
             if($res)return Tool::jsonR(0, 'change success', null);
 
