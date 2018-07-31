@@ -166,7 +166,6 @@ class SkbMasterVerify extends Controller
 
         if($appeal && $user) {
             $res = $verify->where('mid', $user['id'])
-                            ->first()
                             ->update(['appeal'=>$appeal]);
 
             if($res) return Tool::jsonR(0, 'appeal success', $res);
