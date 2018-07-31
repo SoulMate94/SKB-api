@@ -46,7 +46,7 @@ class SkbMasterVerify extends Controller
             return Tool::jsonResp([
                 'err' => -2,
                 'msg' => '认证失败',
-                'dat' => null
+                'dat' => ['failure_reason' =>$dat['failure_reason']]
             ]);
         }
 
