@@ -64,8 +64,6 @@ class SkbBankCard extends Controller
 
         $params = $req->all();
 
-        var_dump($params);die;
-
         if ($msg = $this->check($params, $rules)) {
             return Tool::jsonResp([
                 'err' => 403,
@@ -83,6 +81,8 @@ class SkbBankCard extends Controller
         }
 
         $bank = BankCard::info($params['bank_card_number']);
+
+        var_dump($bank);die;
 
         if (!$bank) {
             return Tool::jsonResp([
