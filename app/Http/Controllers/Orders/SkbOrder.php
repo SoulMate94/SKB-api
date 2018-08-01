@@ -31,7 +31,7 @@ class SkbOrder extends Controller
             'total_price'  => 'required|numeric',
             'appoint_time' => 'required|numeric',
             'service_id'   => 'required|numeric',
-            'area_id'      => 'required|array'
+//            'area_id'      => 'required|array'
         ]);
 
         //用户校验
@@ -74,7 +74,7 @@ class SkbOrder extends Controller
         }
 
         $res['product_info'] = json_encode($res['product_info']);
-        $res['area_id']      = json_encode($res['area_id']);
+//        $res['area_id']      = json_encode($res['area_id']);
         $res['order_number'] = trade_no();
 
         if ($order->createOrder($res)) {
