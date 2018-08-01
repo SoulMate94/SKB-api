@@ -88,7 +88,7 @@ class SkbOrder extends Controller
                         ->first();
 
         $areas  = json_decode($verify->workarea, true);
-        var_dump($verify->workarea); die();
+        var_dump($usr['id']); die();
         $orders = $orders->where(['order_status', 0])
                             ->whereIn('end_addr', $areas)
                             ->get();
