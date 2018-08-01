@@ -96,7 +96,7 @@ class SkbOrder extends Controller
     public function getOrders(Session $ssn, OrderModel $orders, Verify $verify, User $users)
     {
         $usr   = $ssn->get('user');
-        if ($usr['role'] != 2) return Tool::jsonR(-9, '这个操作只有师傅才可以进行', '');
+        if ($usr['role'] != 2) return Tool::jsonR(-1, '这个操作只有师傅才可以进行', '');
 
         $verify = $verify->where([
                             ['mid', $usr['id']],
@@ -104,51 +104,48 @@ class SkbOrder extends Controller
                             ['is_del', 0],
                             ['is_work', 1]
                         ])
-                        ->first();
+                        ->get();
 
+        if($verify->isEmpty()) return Tool::jsonR(-1, 'user role is fail', null);
+
+        $verify->first();
         $areas  = json_decode($verify->work_area, true);
 
-        if($areas) {
-            $orders = $orders->where('order_status', 0)
-                ->whereIn('end_addr', $areas)
-                ->get();
+        if($areas) return Tool::jsonR(-2, 'work_area is fail', null);
 
-            if(!$orders->isEmpty()) {
+        $orders = $orders->where('order_status', 0)
+                        ->whereIn('end_addr', $areas)
+                        ->get();
 
-                //获取用户基础信息
-                var_dump($orders->uid);die;
-                $userId = $orders->uid
-                                ->toArray();
-                $users  = $users->select([
-                    'id',
-                    'username',
-                    'nickname',
-                    'avatar'
-                ])
-                                ->where(['is_del', 0])
-                                ->whereIn('id', $userId)
-                                ->get()
-                                ->toArray();
+        if($orders->isEmpty()) return Tool::jsonR(1, '没有符合条件的订单', null);
 
-                $userInfo = [];
-                foreach ($users as $user)
-                {
-                    $userInfo[$user['id']] = $user;
-                    unset($userInfo[$user['id']][0]);
-                }
+        //获取用户基础信息
+        $userId = $orders->pluck('uid')
+                         ->toArray();
+        $users  = $users->select([
+            'id',
+            'username',
+            'nickname',
+            'avatar'
+        ])
+                        ->where(['is_del', 0])
+                        ->whereIn('id', $userId)
+                        ->get()
+                        ->toArray();
 
-                $orders = $orders->toArray();
-
-                return Tool::jsonR(0, 'get orderList success', [
-                    'orders'    => $orders,
-                    'userInfo'  => $userInfo
-                ]);
-            }
-
-            return Tool::jsonR(1, '没有符合条件的订单', null);
+        $userInfo = [];
+        foreach ($users as $user)
+        {
+            $userInfo[$user['id']] = $user;
+            unset($userInfo[$user['id']][0]);
         }
 
-        return Tool::jsonR(-1, 'work_area is fail', null);
+        $orders = $orders->toArray();
+
+        return Tool::jsonR(0, 'get orderList success', [
+            'orders'    => $orders,
+            'userInfo'  => $userInfo
+        ]);
     }
 
     /**
