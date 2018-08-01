@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\{
     Common\SkbProduct,
     Orders\SkbOrder as OrderModel,
-    Master\Verify,
-    User\SkbUsersModel
+    Master\Verify
 };
 use App\Traits\Session;
 use App\Traits\Tool;
@@ -93,7 +92,6 @@ class SkbOrder extends Controller
      * @param Session $ssn
      * @param OrderModel $orders
      * @param Verify $verify
-     * @param SkbUsersModel $users
      * @param SkbProduct $proModel
      * @return $this
      */
@@ -101,26 +99,15 @@ class SkbOrder extends Controller
         Session $ssn,
         OrderModel $orders,
         Verify $verify,
-        SkbUsersModel $users,
         SkbProduct $proModel
     ){
         $usr   = $ssn->get('user');
         if ($usr['role'] != 2) return Tool::jsonR(-1, '这个操作只有师傅才可以进行', '');
 
-        $verify = $verify->where([
-                            ['mid', $usr['id']],
-                            ['verify_status', 2],
-                            ['is_del', 0],
-                            ['is_work', 1]
-                        ])
-                        ->get();
+        // 获取师傅工作区域
+        $areas = $verify->getMasterAreas($usr['id']);
 
-        if($verify->isEmpty()) return Tool::jsonR(-1, 'user role is fail', null);
-
-        $verify = $verify->first();
-        $areas  = json_decode($verify->work_area, true);
-
-        if(!is_array($areas)) return Tool::jsonR(-2, 'work_area is fail', null);
+        if(!$areas) return Tool::jsonR(-2, 'work_area is fail', null);
 
         $orders = $orders->select([
                             'skb_orders.id',
@@ -138,24 +125,17 @@ class SkbOrder extends Controller
                             'user.nickname',
                             'user.avatar'
                         ])
-                        ->where('order_status', 0)
-//                        ->where('appoint_time', '>', time()+7200)
-                        ->whereIn('end_addr', $areas)
-                        ->leftjoin('skb_users as user', 'skb_orders.uid', '=', 'user.id')
-                        ->get();
+                ->where('order_status', 0)
+//                ->where('appoint_time', '>', time()+7200)
+                ->whereIn('end_addr', $areas)
+                ->leftjoin('skb_users as user', 'skb_orders.uid', '=', 'user.id')
+                ->get();
 
         if($orders->isEmpty()) return Tool::jsonR(1, '没有符合条件的订单', null);
 
-        //获取用户基础信息
-        $userId   = $orders->pluck('uid')
-                         ->toArray();
-        $userInfo = $users->getUserInfoByOrder($userId);
-
-        if (!$userInfo) return Tool::jsonR(-1, 'user role is fail', null);
-
         //获取产品详情
         $proInfo  = $orders->pluck('product_info')
-                            ->toArray();
+                    ->toArray();
         $proInfos = $proModel->getProducInfoByOrder($proInfo);
 
         if(!$proInfos) return Tool::jsonR(-3, 'product error', null);
@@ -163,12 +143,11 @@ class SkbOrder extends Controller
         $orders   = $orders->toArray();
 
         return Tool::jsonR(0,
-                    'get orderList success',
-                        [
-                            'orders'    => $orders,
-                            'userInfo'  => $userInfo,
-                            'product'   => $proInfos
-                        ]);
+            'get orderList success',
+                [
+                    'orders'    => $orders,
+                    'product'   => $proInfos
+                ]);
     }
 
     /**

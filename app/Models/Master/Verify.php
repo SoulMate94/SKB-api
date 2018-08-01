@@ -101,4 +101,23 @@ class Verify extends Model
                     ->where('mid', $params['mid'])
                     ->first()['verify_status'] ==-1?true:false;
     }
+
+    public function getMasterAreas($id)
+    {
+        $verify = $this->where([
+            ['mid', $id],
+            ['verify_status', 2],
+            ['is_del', 0],
+            ['is_work', 1]
+        ])->get();
+
+        if($verify->isEmpty()) return false;
+
+        $verify = $verify->first();
+        $areas  = json_decode($verify->work_area, true);
+
+        if(is_array($areas)) return $areas;
+
+        return false;
+    }
 }
