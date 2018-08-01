@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Models\{
-    Common\SkbProduct, Orders\SkbOrder as OrderModel, Master\Verify, User
+    Common\SkbProduct,
+    Orders\SkbOrder as OrderModel,
+    Master\Verify,
+    User\SkbUsersModel
 };
 use App\Traits\Session;
 use App\Traits\Tool;
@@ -93,7 +96,7 @@ class SkbOrder extends Controller
      * @param User $users
      * @return $this
      */
-    public function getOrders(Session $ssn, OrderModel $orders, Verify $verify, User $users)
+    public function getOrders(Session $ssn, OrderModel $orders, Verify $verify, SkbUsersModel $users)
     {
         $usr   = $ssn->get('user');
         if ($usr['role'] != 2) return Tool::jsonR(-1, '这个操作只有师傅才可以进行', '');
@@ -123,11 +126,11 @@ class SkbOrder extends Controller
         $userId = $orders->pluck('uid')
                          ->toArray();
         $users  = $users->select([
-            'id',
-            'username',
-            'nickname',
-            'avatar'
-        ])
+                            'id',
+                            'username',
+                            'nickname',
+                            'avatar'
+                        ])
                         ->where('is_del', 0)
                         ->whereIn('id', $userId)
                         ->get()
