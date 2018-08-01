@@ -89,35 +89,40 @@ class SkbOrder extends Controller
                         ->first();
 
         $areas  = json_decode($verify->work_area, true);
-        $orders = $orders->where(['order_status', 0])
-                            ->whereIn('end_addr', $areas)
-                            ->get();
 
-        $userId = $orders->uid()
-                        ->toArray();
-        $users  = $users->select([
-                            'id',
-                            'nickname',
-                            'avatar'
-                        ])
-                        ->where(['is_del', 0])
-                        ->whereIn('id', $userId)
-                        ->get()
-                        ->toArray();
+        if($areas) {
+            $orders = $orders->where('order_status', 0)
+                ->whereIn('end_addr', $areas)
+                ->get();
 
-        $userInfo = [];
-        foreach ($users as $user)
-        {
-            $userInfo[$user['id']] = $user;
-            unset($userInfo[$user['id']][0]);
+            $userId = $orders->uid()
+                ->toArray();
+            $users  = $users->select([
+                'id',
+                'nickname',
+                'avatar'
+            ])
+                ->where(['is_del', 0])
+                ->whereIn('id', $userId)
+                ->get()
+                ->toArray();
+
+            $userInfo = [];
+            foreach ($users as $user)
+            {
+                $userInfo[$user['id']] = $user;
+                unset($userInfo[$user['id']][0]);
+            }
+
+            $orders = $orders->toArray();
+
+            return Tool::jsonR(0, 'get orderList success', [
+                'orders'    => $orders,
+                'userInfo'  => $userInfo
+            ]);
         }
 
-        $orders = $orders->toArray();
-
-        return Tool::jsonR(0, 'get orderList success', [
-            'orders'    => $orders,
-            'userInfo'  => $userInfo
-        ]);
+        return Tool::jsonR(-1, 'work_area is fail', null);
     }
 
     /**
