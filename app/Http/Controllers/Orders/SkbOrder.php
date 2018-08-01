@@ -142,61 +142,20 @@ class SkbOrder extends Controller
         if($orders->isEmpty()) return Tool::jsonR(1, '没有符合条件的订单', null);
 
         //获取用户基础信息
-        $userId = $orders->pluck('uid')
+        $userId   = $orders->pluck('uid')
                          ->toArray();
-        $users  = $users->select([
-                            'id',
-                            'username',
-                            'nickname',
-                            'avatar'
-                        ])
-                        ->where('is_del', 0)
-                        ->whereIn('id', $userId)
-                        ->get()
-                        ->toArray();
-        $userInfo = [];
-        foreach ($users as $user)
-        {
-            $userInfo[$user['id']] = $user;
-            unset($userInfo[$user['id']][0]);
-        }
+        $userInfo = $users->getUserInfoByOrder($userId);
+
+        if (!$userInfo) return Tool::jsonR(-1, 'user role is fail', null);
 
         //获取产品详情
         $proInfo  = $orders->pluck('product_info')
                             ->toArray();
-        $proInfos = [];
-        $k        = 0;
-        foreach ($proInfo as $v)
-        {
-            $proId        = json_decode($v, true);
-            foreach ($proId as $pId)
-            {
-                $proInfos[$k] = $proModel->select([
-                    'id',
-                    'product_cate_id',
-                    'product_name',
-                    'product_price',
-                    'product_img',
-                    'install_price',
-                    'uninstall_price'
-                ])
-                    ->where([
-                        ['id', $pId['product_id']],
-                        ['is_active', 1]
-                    ])
-                    ->get();
-                if ($proInfos[$k]->isEmpty()){
-                    unset($proInfos[$k]);
-                    continue;
-                }
+        $proInfos = $proModel->getProducInfoByOrder($proInfo);
 
-                $proInfos[$k] = $proInfos[$k]->first()
-                    ->toArray();
-                $k++;
-            }
-        }
+        if(!$proInfos) return Tool::jsonR(-3, 'product error', null);
 
-        $orders = $orders->toArray();
+        $orders   = $orders->toArray();
 
         return Tool::jsonR(0,
                     'get orderList success',
