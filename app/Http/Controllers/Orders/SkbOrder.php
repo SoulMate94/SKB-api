@@ -49,12 +49,13 @@ class SkbOrder extends Controller
                                     ->whereIn('id',$price_tmp)
                                     ->get();
 
-        if($prices->isEmpty()) return Tool::jsonR(-2,'product price is error', null);
+        if($prices->isEmpty()) return Tool::jsonR(-4,'product price is error', null);
 
         $price_tmp = 0;
         foreach ($prices->toArray() as $v) {
             $price_tmp += $v['product_price'];
         }
+        die($price_tmp);
         //检测价格是否正常
         if ($price_tmp != $res['total_price']) {
             return Tool::jsonR(-3, 'price error', '');
