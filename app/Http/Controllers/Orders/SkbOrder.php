@@ -80,13 +80,15 @@ class SkbOrder extends Controller
         $usr   = $ssn->get('user');
         if ($usr['role'] != 2) return Tool::jsonR(-9, '这个操作只有师傅才可以进行', '');
 
-        $verify = $verify->where([['mid', $usr['id']],
+        $verify = $verify->where([
+                            ['mid', $usr['id']],
                             ['verify_status', 2],
                             ['is_del', 0]
                         ])
                         ->first();
 
         $areas  = json_decode($verify->workarea, true);
+        var_dump($areas); die();
         $orders = $orders->where(['order_status', 0])
                             ->whereIn('end_addr', $areas)
                             ->get();
