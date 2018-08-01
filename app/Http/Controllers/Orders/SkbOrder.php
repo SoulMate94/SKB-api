@@ -95,31 +95,35 @@ class SkbOrder extends Controller
                 ->whereIn('end_addr', $areas)
                 ->get();
 
-            $userId = $orders->uid()
-                ->toArray();
-            $users  = $users->select([
-                'id',
-                'nickname',
-                'avatar'
-            ])
-                ->where(['is_del', 0])
-                ->whereIn('id', $userId)
-                ->get()
-                ->toArray();
+            if($orders) {
+                $userId = $orders->uid()
+                    ->toArray();
+                $users  = $users->select([
+                    'id',
+                    'nickname',
+                    'avatar'
+                ])
+                    ->where(['is_del', 0])
+                    ->whereIn('id', $userId)
+                    ->get()
+                    ->toArray();
 
-            $userInfo = [];
-            foreach ($users as $user)
-            {
-                $userInfo[$user['id']] = $user;
-                unset($userInfo[$user['id']][0]);
+                $userInfo = [];
+                foreach ($users as $user)
+                {
+                    $userInfo[$user['id']] = $user;
+                    unset($userInfo[$user['id']][0]);
+                }
+
+                $orders = $orders->toArray();
+
+                return Tool::jsonR(0, 'get orderList success', [
+                    'orders'    => $orders,
+                    'userInfo'  => $userInfo
+                ]);
             }
 
-            $orders = $orders->toArray();
-
-            return Tool::jsonR(0, 'get orderList success', [
-                'orders'    => $orders,
-                'userInfo'  => $userInfo
-            ]);
+            return Tool::jsonR(1, '没有符合条件的订单', null);
         }
 
         return Tool::jsonR(-1, 'work_area is fail', null);
