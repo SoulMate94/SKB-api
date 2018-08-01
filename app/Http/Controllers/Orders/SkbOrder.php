@@ -106,9 +106,11 @@ class SkbOrder extends Controller
                         ])
                         ->first();
 
+        if($verify->isEmpty()) return Tool::jsonR(-1, 'user role is fail', null);
+
         $areas  = json_decode($verify->work_area, true);
 
-        if($areas->isEmpty()) return Tool::jsonR(-1, 'work_area is fail', null);
+        if($areas) return Tool::jsonR(-2, 'work_area is fail', null);
 
         $orders = $orders->where('order_status', 0)
                         ->whereIn('end_addr', $areas)
