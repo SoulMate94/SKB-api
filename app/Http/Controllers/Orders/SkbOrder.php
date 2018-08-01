@@ -51,8 +51,6 @@ class SkbOrder extends Controller
 
         if($prices->isEmpty()) return Tool::jsonR(-4,'product_info is error', null);
 
-        var_dump($price_tmp);die();
-
         //统计价格
         $price_tmp = 0;
         switch($res['service_id'])
