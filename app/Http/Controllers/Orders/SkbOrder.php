@@ -95,8 +95,7 @@ class SkbOrder extends Controller
                 ->whereIn('end_addr', $areas)
                 ->get();
 
-            var_dump($orders);die;
-            if($orders) {
+            if(!$orders->isEmpty()) {
                 $userId = $orders->uid()
                     ->toArray();
                 $users  = $users->select([
