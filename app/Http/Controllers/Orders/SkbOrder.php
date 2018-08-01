@@ -41,6 +41,7 @@ class SkbOrder extends Controller
 
         //验证价格的正确性
         $price_tmp = [];
+        var_dump($res);die;
         foreach ($res['product_info'] as $v) {
             //提取提交产品id
             $price_tmp[] = $v['product_id'];
@@ -96,10 +97,13 @@ class SkbOrder extends Controller
                 ->get();
 
             if(!$orders->isEmpty()) {
+
+                //获取用户基础信息
                 $userId = $orders->uid()
                     ->toArray();
                 $users  = $users->select([
                     'id',
+                    'username',
                     'nickname',
                     'avatar'
                 ])
