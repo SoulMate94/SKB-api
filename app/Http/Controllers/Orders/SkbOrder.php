@@ -93,11 +93,17 @@ class SkbOrder extends Controller
      * @param Session $ssn
      * @param OrderModel $orders
      * @param Verify $verify
-     * @param User $users
+     * @param SkbUsersModel $users
+     * @param SkbProduct $proModel
      * @return $this
      */
-    public function getOrders(Session $ssn, OrderModel $orders, Verify $verify, SkbUsersModel $users)
-    {
+    public function getOrders(
+        Session $ssn,
+        OrderModel $orders,
+        Verify $verify,
+        SkbUsersModel $users,
+        SkbProduct $proModel
+    ){
         $usr   = $ssn->get('user');
         if ($usr['role'] != 2) return Tool::jsonR(-1, '这个操作只有师傅才可以进行', '');
 
@@ -135,7 +141,6 @@ class SkbOrder extends Controller
                         ->whereIn('id', $userId)
                         ->get()
                         ->toArray();
-
         $userInfo = [];
         foreach ($users as $user)
         {
@@ -143,12 +148,42 @@ class SkbOrder extends Controller
             unset($userInfo[$user['id']][0]);
         }
 
+        //获取产品详情
+        $proInfo  = $orders->pluck('product_info')
+                            ->toArray();
+        $proInfos = [];
+        foreach ($proInfo as $k => $v)
+        {
+            $proId        = json_decode($v, true)['product_id'];
+            $proInfos[$k] = $proModel->select([
+                                    'id',
+                                    'product_cate_id',
+                                    'product_name',
+                                    'product_price',
+                                    'product_img',
+                                    'install_price',
+                                    'uninstall_price'
+                                ])
+                                    ->where([
+                                        ['id', $proId],
+                                        ['is_active', 1]
+                                    ])
+                                    ->get();
+            if ($proInfos[$k]->isEmpty()) continue;
+
+            $proInfos[$k] = $proInfos[$k]->first()
+                                         ->toArray();
+        }
+
         $orders = $orders->toArray();
 
-        return Tool::jsonR(0, 'get orderList success', [
-            'orders'    => $orders,
-            'userInfo'  => $userInfo
-        ]);
+        return Tool::jsonR(0,
+                    'get orderList success',
+                        [
+                            'orders'    => $orders,
+                            'userInfo'  => $userInfo,
+                            'product'   => $proInfos
+                        ]);
     }
 
     /**
