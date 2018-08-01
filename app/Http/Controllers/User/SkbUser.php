@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use QCloud_WeApp_SDK\Conf as Config,
     QCloud_WeApp_SDK\Auth\LoginService as LoginService,
     QCloud_WeApp_SDK\Constants as Constants;
+use Symfony\Component\HttpKernel\HttpCache\Ssi;
 
 class SkbUser extends Controller
 {
@@ -61,11 +62,11 @@ class SkbUser extends Controller
 
             $users  = new SkbUsers();
 
-            $user   = $users->where('openid','=',$result['userinfo']['userinfo']->openId)
-                            ->first()
-                            ->toArray();
+            $user   = $users->where('openid', '=', $result['userinfo']['userinfo']->openId)
+                            ->first();
 
             if($user){
+                $user->toArray();
                 $ssn->set('user' , $user);
 
                 return Tool::jsonResp([
@@ -79,15 +80,16 @@ class SkbUser extends Controller
 
             //注册用户 by jizw
             $user = [
-                'username'      =>  '',
-                'openid'        =>  $result['userinfo']['userinfo']->openId,
-                'nickname'      =>  $result['userinfo']['userinfo']->nickName,
-                'avatar'        =>  $result['userinfo']['userinfo']->avatarUrl,
-                'created_at'    =>  date('Y-m-d H:i:s'),
-                'updated_at'    =>  date('Y-m-d H:i:s')
+                'username'   => '',
+                'openid'     => $result['userinfo']['userinfo']->openId,
+                'nickname'   => $result['userinfo']['userinfo']->nickName,
+                'avatar'     => $result['userinfo']['userinfo']->avatarUrl,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+                'role'       => 0
             ];
 
-            $user[] = ['id' => $users->insertGetId($user)];
+            $user['id'] =$users->insertGetId($user);
 
             if (!$user['id']) return Tool::jsonResp([
                 'err' => -1,
@@ -98,7 +100,10 @@ class SkbUser extends Controller
 
             return Tool::jsonResp([
                 'err' => 0,
-                'dat' => $user
+                'dat' => [
+                        $user,
+                        'ssn' => session_id()
+                    ]
             ]);
         }
 
@@ -106,6 +111,27 @@ class SkbUser extends Controller
             'err' => -1,
             'msg' => $result['error']
         ]);
+    }
+
+    public function selectRole(Request $req, Session $ssn, SkbUsers $users)
+    {
+        $user  = $ssn->get('user');
+        $role  = $req->post('role');
+
+        $yrole = $users->select('role')
+                        ->where('id', $user['id'])
+                        ->first();
+
+        if($yrole->role == 0){
+            $res = $users->where('id', $user['id'])
+                            ->update(['role'=> $role]);
+
+            if($res)return Tool::jsonR(0, 'change success', null);
+
+            return Tool::jsonR(404, '服务器开小差了', null);
+        }
+
+        return Tool::jsonR(-1, 'user role can`t do it', null);
     }
 
     public function testLogin(Request $req, Session $ssn)
@@ -128,8 +154,9 @@ class SkbUser extends Controller
         }
 
         return Tool::jsonResp([
-            'err'   =>  -1,
-            'dat'   =>  'you 挂了!!!!'
+            'err' => -1,
+            'msg' => 'you 挂了!!!!',
+            'dat' => null
         ]);
     }
 }

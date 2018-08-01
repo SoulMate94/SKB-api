@@ -11,6 +11,10 @@ class Verify extends Model
     protected $primaryKey = 'id';
     public $timestamps    = false;
 
+    protected $casts = [
+        'id_card_img'       => 'json'
+    ];
+
     //插入master verify数据
     public function insertVerify($params)
     {
@@ -48,9 +52,11 @@ class Verify extends Model
         $params['verify_status']    =   1;
         $params['updated_at']       =   date('Y-m-d H:i:s');
 
-        $params['work_area']        =   json_encode($params['work_area']);
-        $params['product_type_id']  =   json_encode($params['product_type_id']);
-        $params['service_type_id']  =   json_encode($params['service_type_id']);
+        $params['work_area']        = json_encode($params['work_area']);
+        $params['product_type_id']  = json_encode($params['product_type_id']);
+        $params['id_card_img']      = $params['id_card_img'];
+        $params['service_sta_time'] = strtotime($params['service_sta_time']);
+        $params['service_end_time'] = strtotime($params['service_end_time']);
 
         if(isset($params['id_card_img'])) {
             $params['id_card_img']  =   json_encode($params['id_card_img']);
@@ -76,11 +82,6 @@ class Verify extends Model
         $mid = $params['mid'];
 
         $res = DB::table('skb_users')->where([['id','=',$mid],['role','>',1]]);
-
-        if ($res) {
-            unset($res);
-            $res = $this->where([['mid', $mid],['is_del', 0]])->first();
-        }
 
         return $res ? true : false;
     }

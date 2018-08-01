@@ -11,7 +11,7 @@ $app->group([
     $app->get('/test/message', 'Message@test');  // by jizw
 
     // 对接微信服务器校验用接口,用完即换
-    $app->get('/wechat/service', 'WeChatPushServerCheck@getWechatServiceCheck');  // by jizw
+//    $app->get('/wechat/service', 'WeChatPushServerCheck@getWechatServiceCheck');  // by jizw
 
     // 对接微信服务器
     // $app->get('/wechat/service', 'WeChatPushServerCheck@getWechatServiceCheck');  // by jizw
@@ -23,5 +23,9 @@ $app->group([
     $app->get('/wechat/push/form_id/check', 'Message@checkFormId');  //by jizw
 
     // admin端推送使用
-    $app->get('/wechat/push/admin', 'Message@adminPush');  //by jizw
+    $app->post('/wechat/push/admin', 'Message@adminPush');  //by jizw
+
+    // 师傅认证图片提交
+    $app->post('post_master_verify_upload_image', 'uploadFile@masterVerifyUploadImage'); // by jizw
+
 });

@@ -6,7 +6,8 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller,
     App\Traits\Tool,
     App\Traits\Session,
-    App\Models\Master\Verify as masterVerify;
+    App\Models\Master\Verify as masterVerify,
+    App\Models\User\SkbUsersModel;
 use Illuminate\Http\Request,
     Illuminate\Support\Facades\Validator;
 
@@ -30,7 +31,7 @@ class SkbMasterVerify extends Controller
             return Tool::jsonResp([
                 'err' => 0,
                 'msg' => '认证成功',
-                'dat' => $dat,
+                'dat' => null,
             ]);
         }
 
@@ -39,6 +40,14 @@ class SkbMasterVerify extends Controller
                 'err' => 1,
                 'msg' => '认证中,稍后我们的工作人员会联系你',
                 'dat' => ['verify_status' =>$dat['verify_status']],
+            ]);
+        }
+
+        if($dat['verify_status'] === -1) {
+            return Tool::jsonResp([
+                'err' => -2,
+                'msg' => '认证失败',
+                'dat' => ['failure_reason' =>$dat['failure_reason']]
             ]);
         }
 
@@ -54,7 +63,7 @@ class SkbMasterVerify extends Controller
      * @param Request $req
      * @return $this
      */
-    public function verifyInfo(Session $ssn, masterVerify $verify)
+    public function verifyInfo(Session $ssn, masterVerify $verify, SkbUsersModel $users)
     {
         $master_id = $ssn->get('user')['id'];
 
@@ -62,17 +71,23 @@ class SkbMasterVerify extends Controller
             'id_number',
             'id_card_img',
             'work_area',
+            'work_year',
             'product_type_id',
-            'service_sta_time',
-            'service_end_time',
             'failure_reason',
-            'created_at'
         ];
         $dat = $verify->select($select)
-                ->where('mid',$master_id)
+                ->where([
+                    ['mid', $master_id],
+                    ['is_del', 0]
+                ])
+                ->whereIn('verify_status', [1, -1])
                 ->first();
 
-        if(!$dat) {
+        $users     = $users->select(['username', 'mobile'])
+                            ->where('id', $master_id)
+                            ->first();
+
+        if(!$dat || !$users) {
             return Tool::jsonResp([
                 'err' => -1,
                 'msg' => '没有提交认证',
@@ -80,7 +95,7 @@ class SkbMasterVerify extends Controller
             ]);
         }
 
-        $dat['created_at'] = strtotime($dat['created_at']);
+        $dat               = array_merge($users->toArray(),$dat->toArray());
 
         return Tool::jsonResp([
             'err' => 0,
@@ -117,9 +132,6 @@ class SkbMasterVerify extends Controller
             'service_end_time'  =>  'required',
         ];
 
-        $params['service_sta_time'] = strtotime($params['service_sta_time']);
-        $params['service_end_time'] = strtotime($params['service_end_time']);
-
         if ($msg = $this->check($params, $rules)) {
             return Tool::jsonResp([
                 'err' => '403',
@@ -127,10 +139,7 @@ class SkbMasterVerify extends Controller
             ]);
         }
 
-        $params['mid']              =   $ssn->get('user')['id'];
-        if (isset($params['id_card_img'])) {
-            $params['id_card_img']  =   $this->masterVerifyFile($req);
-        }
+        $params['mid'] = $ssn->get('user')['id'];
 
         $dat = $verify->updateVerify($params);
 
@@ -139,20 +148,30 @@ class SkbMasterVerify extends Controller
                 'err' => 0,
                 'msg' => '申请修改成功'
             ]);
-        } else {
-            return Tool::jsonResp([
+        }
+
+        return Tool::jsonResp([
                 'err' => '404',
                 'msg' => '申请修改失败'
             ]);
-        }
     }
 
     /**
      * 申诉
      */
-    public function appeal()
+    public function appeal(Session $ssn, masterVerify $verify, Request $req)
     {
-        // TODO
+        $appeal = $req->post('appeal');
+        $user   = $ssn->get('user');
+
+        if($appeal && $user) {
+            $res = $verify->where('mid', $user['id'])
+                            ->update(['appeal'=>$appeal]);
+
+            if($res) return Tool::jsonR(0, 'appeal success', $res);
+
+            return Tool::jsonR(404, 'service is wrong', null);
+        }
     }
 
     /**
@@ -179,8 +198,8 @@ class SkbMasterVerify extends Controller
             'work_area'         =>  'required|array',
             'id_card_img'       =>  'required|array',
             'product_type_id'   =>  'required|array',
-            'service_sta_time'  =>  'required|numeric',
-            'service_end_time'  =>  'required|numeric',
+            'service_sta_time'  =>  'required',
+            'service_end_time'  =>  'required',
         ];
 
         if ($msg = $this->check($params, $rules)) {
@@ -190,8 +209,7 @@ class SkbMasterVerify extends Controller
             ]);
         }
 
-        $params['mid']          =   $ssn->get('user')['id'];
-        $params['id_card_img']  =   Tool::uploadFile($req,'id_card_img', 'masterVerify');
+        $params['mid']         = $ssn->get('user')['id'];
 
         $dat = $verify->insertVerify($params);
 

@@ -14,4 +14,6 @@ $app->group([
 
     // 师傅&&用户 登录&&注册
     $app->get('login', 'SkbUser@login'); // by jizw
+    // 师傅&&用户 选择角色
+    $app->post('select/role', 'SkbUser@selectRole'); // by jizw
 });

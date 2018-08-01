@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Models\{
-    Common\SkbProduct,
-    Orders\SkbOrder as OrderModel,
-    Master\Verify
+    Common\SkbProduct, Orders\SkbOrder as OrderModel, Master\Verify, User
 };
 use App\Traits\Session;
 use App\Traits\Tool;
@@ -32,7 +30,8 @@ class SkbOrder extends Controller
             'end_addr'     => 'required|numeric',
             'total_price'  => 'required|numeric',
             'appoint_time' => 'required|numeric',
-            'service_id'   => 'required|array'
+            'service_id'   => 'required|array',
+            'area_id'      => 'required|array'
         ]);
 
         //用户校验
@@ -46,8 +45,15 @@ class SkbOrder extends Controller
             //提取提交产品id
             $price_tmp[] = $v['product_id'];
         }
-        $prices = SkbProduct::select('product_price')->whereIn('id',$price_tmp);
-        foreach ($prices as $v) {
+        $prices    = SkbProduct::select('product_price')
+                                    ->whereIn('id',$price_tmp)
+                                    ->get();
+
+        if($prices->isEmpty()) return Tool::jsonR(-4,'product price is error', null);
+
+        var_dump($price_tmp);die();
+        $price_tmp = 0;
+        foreach ($prices->toArray() as $v) {
             $price_tmp += $v['product_price'];
         }
         //检测价格是否正常
@@ -55,8 +61,9 @@ class SkbOrder extends Controller
             return Tool::jsonR(-3, 'price error', '');
         }
 
-        $res['product_info']    = json_encode($res['product_info']);
-        $res['order_number']    = trade_no();
+        $res['product_info'] = json_encode($res['product_info']);
+        $res['area_id']      = json_encode($res['area_id']);
+        $res['order_number'] = trade_no();
 
         if ($order->createOrder($res)) {
             return Tool::jsonR( 0, 'create success', [
@@ -65,6 +72,88 @@ class SkbOrder extends Controller
         }
 
         return Tool::jsonR( -1, '服务器目前有些繁忙,请稍后再试', '');
+    }
+
+    /**
+     * 获取订单列表 师傅端 by jizw
+     * @param Session $ssn
+     * @param OrderModel $orders
+     * @param Verify $verify
+     * @param User $users
+     * @return $this
+     */
+    public function getOrders(Session $ssn, OrderModel $orders, Verify $verify, User $users)
+    {
+        $usr   = $ssn->get('user');
+        if ($usr['role'] != 2) return Tool::jsonR(-9, '这个操作只有师傅才可以进行', '');
+
+        $verify = $verify->where([
+                            ['mid', $usr['id']],
+                            ['verify_status', 2],
+                            ['is_del', 0],
+                            ['is_work', 1]
+                        ])
+                        ->first();
+
+        $areas  = json_decode($verify->work_area, true);
+
+        if($areas) {
+            $orders = $orders->where('order_status', 0)
+                ->whereIn('end_addr', $areas)
+                ->get();
+
+            if(!$orders->isEmpty()) {
+
+                //获取用户基础信息
+                $userId = $orders->uid()
+                    ->toArray();
+                $users  = $users->select([
+                    'id',
+                    'username',
+                    'nickname',
+                    'avatar'
+                ])
+                    ->where(['is_del', 0])
+                    ->whereIn('id', $userId)
+                    ->get()
+                    ->toArray();
+
+                $userInfo = [];
+                foreach ($users as $user)
+                {
+                    $userInfo[$user['id']] = $user;
+                    unset($userInfo[$user['id']][0]);
+                }
+
+                $orders = $orders->toArray();
+
+                return Tool::jsonR(0, 'get orderList success', [
+                    'orders'    => $orders,
+                    'userInfo'  => $userInfo
+                ]);
+            }
+
+            return Tool::jsonR(1, '没有符合条件的订单', null);
+        }
+
+        return Tool::jsonR(-1, 'work_area is fail', null);
+    }
+
+    /**
+     * 快速接单,师傅端
+     */
+    public function quickPlaceOrder(Request $req, Session $ssn, OrderModel $order)
+    {
+        $this->validate(['uid' => 'require|number']);
+
+        $uid    = $req->post('uid');
+        $user   = $ssn->get('user');
+
+        if ($uid == $user['id']) {
+            // TODO
+        }
+
+        return Tool::jsonR(-1, 'your uid is wrong', null);
     }
 
     /**
@@ -160,34 +249,6 @@ class SkbOrder extends Controller
     public function updateOrder()
     {
         // TODO
-    }
-
-    /**
-     * 订单列表;师傅端
-     */
-    public function orderList(Session $ssn, OrderModel $order, Verify $verify)
-    {
-        $usr = $ssn->get('user');
-        if ($usr['role'] != 2) return Tool::jsonR(-9, '这个操作只有师傅才可以进行', '');
-
-        $masterArea = json_decode($verify->select('work_area')
-                                         ->where([
-                                             ['mid', $usr['id']],
-                                             ['verify_status', 2],
-                                             ['is_del', 0]
-                                         ])->first()['work_area'], true);
-
-        $res = $order->where([
-            ['order_status',0],
-            ['appoint_time','>',time()],
-        ])->whereIn('end_addr',$masterArea)
-          ->get()->toArray();
-
-        if ($res) {
-            return Tool::jsonR(0, 'get order list success', $res);
-        }
-
-        return Tool::jsonR(1, '目前还没有合适的订单', $res);
     }
 
     /**

@@ -24,6 +24,10 @@ $app->group([
     $app->get('get_master_verify_info', 'SkbMasterVerify@verifyInfo'); // by jizw
     // 师傅认证
     $app->post('post_master_verify', 'SkbMasterVerify@masterVerify'); // by jizw
+    // 师傅认证
+    $app->post('post_master_verify_edit', 'SkbMasterVerify@verifyInfoEdit'); // by jizw
+    // 师傅申诉
+    $app->post('post_master_verify_appeal', 'SkbMasterVerify@appeal'); // by jizw
 
     // 获取信用分
     $app->get('get_credit_score', 'SkbHomePage@getCreditScore'); // by caoxl

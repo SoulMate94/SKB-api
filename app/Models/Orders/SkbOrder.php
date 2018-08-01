@@ -8,16 +8,28 @@ class SkbOrder extends Model
 {
     protected $table = 'skb_orders';
 
+    /**
+     * 用户创建订单
+     * @param $res
+     * @return mixed
+     */
     public function createOrder($res)
     {
         return $this->insertGetId($res);
     }
 
+    /**获取师傅所有订单
+     * @param $params
+     */
     public function getMasterAllOrder($params)
     {
         // TODO
     }
 
+    /**取消订单
+     * @param $res
+     * @return int
+     */
     public function cancel($res)
     {
         $status = $this->checkOrderStatus($res);
