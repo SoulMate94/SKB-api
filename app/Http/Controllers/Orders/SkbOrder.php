@@ -116,6 +116,7 @@ class SkbOrder extends Controller
             if(!$orders->isEmpty()) {
 
                 //获取用户基础信息
+                var_dump($orders->uid);die;
                 $userId = $orders->uid
                                 ->toArray();
                 $users  = $users->select([
