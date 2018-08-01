@@ -141,7 +141,7 @@ class SkbOrder extends Controller
                         ->where('order_status', 0)
 //                        ->where('appoint_time', '>', time()+7200)
                         ->whereIn('end_addr', $areas)
-                        ->leftjoin('skb_users as user', 'skb_orders.mid', '=', 'user.id')
+                        ->leftjoin('skb_users as user', 'skb_orders.uid', '=', 'user.id')
                         ->get();
 
         if($orders->isEmpty()) return Tool::jsonR(1, '没有符合条件的订单', null);
