@@ -45,8 +45,14 @@ class SkbOrder extends Controller
             //提取提交产品id
             $price_tmp[] = $v['product_id'];
         }
-        $prices = SkbProduct::select('product_price')->whereIn('id',$price_tmp);
-        foreach ($prices as $v) {
+        $prices    = SkbProduct::select('product_price')
+                                    ->whereIn('id',$price_tmp)
+                                    ->get();
+
+        if($prices->isEmpty()) return Tool::jsonR(-2,'product price is error', null);
+
+        $price_tmp = 0;
+        foreach ($prices->toArray() as $v) {
             $price_tmp += $v['product_price'];
         }
         //检测价格是否正常
