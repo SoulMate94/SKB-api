@@ -82,8 +82,6 @@ class SkbBankCard extends Controller
 
         $bank = BankCard::info($params['bank_card_number']);
 
-        var_dump($bank);die;
-
         if (!$bank) {
             return Tool::jsonResp([
                 'err' => 202,
