@@ -155,6 +155,7 @@ class SkbOrder extends Controller
         foreach ($proInfo as $k => $v)
         {
             $proId        = json_decode($v, true);
+            var_dump($proId);die;
             $proId        = $proId['product_id'];
             $proInfos[$k] = $proModel->select([
                                     'id',
