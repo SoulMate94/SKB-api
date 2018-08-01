@@ -96,7 +96,7 @@ class SkbOrder extends Controller
     public function getOrders(Session $ssn, OrderModel $orders, Verify $verify, User $users)
     {
         $usr   = $ssn->get('user');
-        if ($usr['role'] != 2) return Tool::jsonR(-9, '这个操作只有师傅才可以进行', '');
+        if ($usr['role'] != 2) return Tool::jsonR(-1, '这个操作只有师傅才可以进行', '');
 
         $verify = $verify->where([
                             ['mid', $usr['id']],
@@ -104,10 +104,11 @@ class SkbOrder extends Controller
                             ['is_del', 0],
                             ['is_work', 1]
                         ])
-                        ->first();
+                        ->get();
 
         if($verify->isEmpty()) return Tool::jsonR(-1, 'user role is fail', null);
 
+        $verify->first();
         $areas  = json_decode($verify->work_area, true);
 
         if($areas) return Tool::jsonR(-2, 'work_area is fail', null);
