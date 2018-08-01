@@ -81,7 +81,14 @@ class SkbBankCard extends Controller
         }
 
         $bank = BankCard::info($params['bank_card_number']);
-        
+
+        if (!$bank) {
+            return Tool::jsonResp([
+                'err' => 202,
+                'msg' => '输入的银行卡不正确, 或未收录.'
+            ]);
+        }
+
         if ($bank) {
             $params['bank']           = $bank['bank'];
             $params['bank_name']      = $bank['bankName'];
