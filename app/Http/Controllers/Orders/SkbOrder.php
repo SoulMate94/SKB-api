@@ -73,7 +73,6 @@ class SkbOrder extends Controller
             return Tool::jsonR(-3, 'price error', '');
         }
 
-        $res['product_info'] = json_encode($res['product_info']);
 //        $res['area_id']      = json_encode($res['area_id']);
         $res['order_number'] = trade_no();
 
@@ -117,18 +116,19 @@ class SkbOrder extends Controller
             if(!$orders->isEmpty()) {
 
                 //获取用户基础信息
-                $userId = $orders->uid()
-                    ->toArray();
+                var_dump($orders->uid);die;
+                $userId = $orders->uid
+                                ->toArray();
                 $users  = $users->select([
                     'id',
                     'username',
                     'nickname',
                     'avatar'
                 ])
-                    ->where(['is_del', 0])
-                    ->whereIn('id', $userId)
-                    ->get()
-                    ->toArray();
+                                ->where(['is_del', 0])
+                                ->whereIn('id', $userId)
+                                ->get()
+                                ->toArray();
 
                 $userInfo = [];
                 foreach ($users as $user)
