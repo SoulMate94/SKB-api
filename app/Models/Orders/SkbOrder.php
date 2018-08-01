@@ -19,7 +19,7 @@ class SkbOrder extends Model
         $dat['uid']          = $res['uid'];
         $dat['product_info'] = $res['product_info'];
         $dat['end_addr']     = $res['end_addr'];
-        $dat['total_price']  = $res['total_price'];
+        $dat['user_price']   = $res['user_price'];
         $dat['appoint_time'] = $res['appoint_time'];
         $dat['service_id']   = $res['service_id'];
         $dat['order_number'] = $res['order_number'];

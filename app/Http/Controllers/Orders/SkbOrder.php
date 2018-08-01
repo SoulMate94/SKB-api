@@ -31,7 +31,7 @@ class SkbOrder extends Controller
             'uid'          => 'required|numeric',
             'product_info' => 'required|array',
             'end_addr'     => 'required|numeric',
-            'total_price'  => 'required|numeric',
+            'user_price'  => 'required|numeric',
             'appoint_time' => 'required|numeric',
             'service_id'   => 'required|numeric',
 //            'area_id'      => 'required|array'
@@ -72,7 +72,7 @@ class SkbOrder extends Controller
             $price_tmp += $v[$product];
         }
         //检测价格是否正常
-        if ($price_tmp != $res['total_price']) {
+        if ($price_tmp != $res['user_price']) {
             return Tool::jsonR(-3, 'price error', '');
         }
 
@@ -128,8 +128,11 @@ class SkbOrder extends Controller
                             'order_number',
                             'product_info',
                             'service_id',
-                            'total_price',
-                            'appoint_time'
+                            'user_price',
+                            'appoint_time',
+                            'end_addr',
+                            'order_remarks',
+                            'master_price'
                         ])
                         ->where('order_status', 0)
 //                        ->where('appoint_time', '>', time()+7200)
@@ -162,30 +165,35 @@ class SkbOrder extends Controller
         $proInfo  = $orders->pluck('product_info')
                             ->toArray();
         $proInfos = [];
-        foreach ($proInfo as $k => $v)
+        $k        = 0;
+        foreach ($proInfo as $v)
         {
-            $proId        = json_decode($v, true)[0]['product_id'];
-            $proInfos[$k] = $proModel->select([
-                                    'id',
-                                    'product_cate_id',
-                                    'product_name',
-                                    'product_price',
-                                    'product_img',
-                                    'install_price',
-                                    'uninstall_price'
-                                ])
-                                    ->where([
-                                        ['id', $proId],
-                                        ['is_active', 1]
-                                    ])
-                                    ->get();
-            if ($proInfos[$k]->isEmpty()){
-                unset($proInfos[$k]);
-                continue;
-            }
+            $proId        = json_decode($v, true);
+            foreach ($proId as $pId)
+            {
+                $proInfos[$k] = $proModel->select([
+                    'id',
+                    'product_cate_id',
+                    'product_name',
+                    'product_price',
+                    'product_img',
+                    'install_price',
+                    'uninstall_price'
+                ])
+                    ->where([
+                        ['id', $pId['product_id']],
+                        ['is_active', 1]
+                    ])
+                    ->get();
+                if ($proInfos[$k]->isEmpty()){
+                    unset($proInfos[$k]);
+                    continue;
+                }
 
-            $proInfos[$k] = $proInfos[$k]->first()
-                                         ->toArray();
+                $proInfos[$k] = $proInfos[$k]->first()
+                    ->toArray();
+                $k++;
+            }
         }
 
         $orders = $orders->toArray();
