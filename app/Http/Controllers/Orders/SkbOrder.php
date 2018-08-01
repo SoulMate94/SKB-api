@@ -55,7 +55,7 @@ class SkbOrder extends Controller
         foreach ($prices->toArray() as $v) {
             $price_tmp += $v['product_price'];
         }
-        die($price_tmp);
+        die($v['product_price']);
         //检测价格是否正常
         if ($price_tmp != $res['total_price']) {
             return Tool::jsonR(-3, 'price error', '');
