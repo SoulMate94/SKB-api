@@ -110,6 +110,7 @@ class SkbOrder extends Controller
 
         $verify = $verify->first();
         $areas  = json_decode($verify->work_area, true);
+        var_dump($areas);die;
 
         if($areas) return Tool::jsonR(-2, 'work_area is fail', null);
 
