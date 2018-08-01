@@ -73,7 +73,6 @@ class SkbOrder extends Controller
             return Tool::jsonR(-3, 'price error', '');
         }
 
-        $res['product_info'] = json_encode($res['product_info']);
 //        $res['area_id']      = json_encode($res['area_id']);
         $res['order_number'] = trade_no();
 

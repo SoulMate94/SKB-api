@@ -23,6 +23,9 @@ class SkbOrder extends Model
         $dat['appoint_time'] = $res['appoint_time'];
         $dat['service_id']   = $res['service_id'];
         $dat['order_number'] = $res['order_number'];
+        $dat['product_info'] = json_encode($res['product_info']);
+        $dat['created_at']   = date('Y-m-d h:i:s');
+        $dat['updated_at']   = date('Y-m-d h:i:s');
 
         return $this->insertGetId($dat);
     }
