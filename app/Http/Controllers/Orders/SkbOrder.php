@@ -122,7 +122,17 @@ class SkbOrder extends Controller
 
         if(!is_array($areas)) return Tool::jsonR(-2, 'work_area is fail', null);
 
-        $orders = $orders->where('order_status', 0)
+        $orders = $orders->select([
+                            'id',
+                            'uid',
+                            'order_number',
+                            'product_info',
+                            'service_id',
+                            'total_price',
+                            'appoint_time'
+                        ])
+                        ->where('order_status', 0)
+//                        ->where('appoint_time', '>', time()+7200)
                         ->whereIn('end_addr', $areas)
                         ->get();
 
@@ -169,7 +179,10 @@ class SkbOrder extends Controller
                                         ['is_active', 1]
                                     ])
                                     ->get();
-            if ($proInfos[$k]->isEmpty()) continue;
+            if ($proInfos[$k]->isEmpty()){
+                unset($proInfos[$k]);
+                continue;
+            }
 
             $proInfos[$k] = $proInfos[$k]->first()
                                          ->toArray();
