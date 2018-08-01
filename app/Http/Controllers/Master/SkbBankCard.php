@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Master;
 
-
 use App\Http\Controllers\Controller,
     App\Traits\Tool;
 use App\Models\Master\SkbBankCard as SkbBankCardModel;
@@ -82,12 +81,12 @@ class SkbBankCard extends Controller
         }
 
         $bank = BankCard::info($params['bank_card_number']);
-
+        
         if ($bank) {
             $params['bank']           = $bank['bank'];
             $params['bank_name']      = $bank['bankName'];
             $params['card_type_name'] = $bank['cardTypeName'];
-            $params['bank_logo']       = $bank['bank'];
+            $params['bank_logo']      = $bank['bank'];
         }
 
         $params['is_verify']  = 0;
