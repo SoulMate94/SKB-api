@@ -83,7 +83,8 @@ class SkbOrder extends Controller
         $verify = $verify->where([
                             ['mid', $usr['id']],
                             ['verify_status', 2],
-                            ['is_del', 0]
+                            ['is_del', 0],
+                            ['is_work', 1]
                         ])
                         ->first();
 
