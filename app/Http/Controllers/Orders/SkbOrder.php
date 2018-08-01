@@ -133,7 +133,7 @@ class SkbOrder extends Controller
                             'skb_orders.end_addr',
                             'skb_orders.order_remarks',
                             'skb_orders.master_price',
-                            'user.id',
+                            'user.id as user_id',
                             'user.username',
                             'user.nickname',
                             'user.avatar'
