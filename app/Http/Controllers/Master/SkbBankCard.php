@@ -28,6 +28,11 @@ class SkbBankCard extends Controller
         $bankcard  = new SkbBankCardModel();
 
         $dat = $bankcard->getBankCardListById($master_id);
+
+        foreach ($dat as $k => $v) {
+            $v->bank_card_number = substr($v->bank_card_number,-4);
+        }
+
         $err = $dat ? 0 : 404;
         $msg = $dat ? 'success' : 'fails';
 
@@ -81,6 +86,7 @@ class SkbBankCard extends Controller
         }
 
         $bank = BankCard::info($params['bank_card_number']);
+
 
         if (!$bank) {
             return Tool::jsonResp([
