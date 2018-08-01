@@ -30,7 +30,7 @@ class SkbOrder extends Controller
             'end_addr'     => 'required|numeric',
             'total_price'  => 'required|numeric',
             'appoint_time' => 'required|numeric',
-            'service_id'   => 'required|array',
+            'service_id'   => 'required|numeric',
             'area_id'      => 'required|array'
         ]);
 
@@ -45,16 +45,28 @@ class SkbOrder extends Controller
             //提取提交产品id
             $price_tmp[] = $v['product_id'];
         }
-        $prices    = SkbProduct::select('product_price')
+        $prices    = SkbProduct::select(['install_price','uninstall_price'])
                                     ->whereIn('id',$price_tmp)
                                     ->get();
 
-        if($prices->isEmpty()) return Tool::jsonR(-4,'product price is error', null);
+        if($prices->isEmpty()) return Tool::jsonR(-4,'product_info is error', null);
 
-        var_dump($price_tmp);die();
+        //统计价格
         $price_tmp = 0;
+        switch($res['service_id'])
+        {
+        case 1:
+            $product = 'install_price';
+            break;
+        case 2:
+            $product = 'uninstall_price';
+            break;
+        default :
+            return Tool::jsonR(-5, '服务超出范围', null);
+        }
+
         foreach ($prices->toArray() as $v) {
-            $price_tmp += $v['product_price'];
+            $price_tmp += $v[$product];
         }
         //检测价格是否正常
         if ($price_tmp != $res['total_price']) {
