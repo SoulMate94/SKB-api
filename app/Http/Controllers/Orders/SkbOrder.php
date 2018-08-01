@@ -51,8 +51,8 @@ class SkbOrder extends Controller
 
         if($prices->isEmpty()) return Tool::jsonR(-4,'product price is error', null);
 
+        var_dump($price_tmp);die();
         $price_tmp = 0;
-        die($prices);
         foreach ($prices->toArray() as $v) {
             $price_tmp += $v['product_price'];
         }
