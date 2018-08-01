@@ -109,6 +109,7 @@ class SkbOrder extends Controller
         if($verify->isEmpty()) return Tool::jsonR(-1, 'user role is fail', null);
 
         $verify = $verify->first();
+        var_dump($verify->work_area);die;
         $areas  = json_decode($verify->work_area, true);
 
         if($areas) return Tool::jsonR(-2, 'work_area is fail', null);
