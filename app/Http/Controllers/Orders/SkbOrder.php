@@ -128,7 +128,7 @@ class SkbOrder extends Controller
             'nickname',
             'avatar'
         ])
-                        ->where(['is_del', 0])
+                        ->where('is_del', 0)
                         ->whereIn('id', $userId)
                         ->get()
                         ->toArray();
