@@ -110,9 +110,8 @@ class SkbOrder extends Controller
 
         $verify = $verify->first();
         $areas  = json_decode($verify->work_area, true);
-        var_dump($areas);die;
 
-        if($areas) return Tool::jsonR(-2, 'work_area is fail', null);
+        if(!is_array($areas)) return Tool::jsonR(-2, 'work_area is fail', null);
 
         $orders = $orders->where('order_status', 0)
                         ->whereIn('end_addr', $areas)
