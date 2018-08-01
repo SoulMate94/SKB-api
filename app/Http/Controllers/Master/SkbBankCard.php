@@ -66,7 +66,7 @@ class SkbBankCard extends Controller
 
         if ($msg = $this->check($params, $rules)) {
             return Tool::jsonResp([
-                'err' => '403',
+                'err' => 403,
                 'msg' => $msg,
             ]);
         }
@@ -81,7 +81,16 @@ class SkbBankCard extends Controller
         }
 
         $bank = BankCard::info($params['bank_card_number']);
-        
+
+        var_dump($bank);die;
+
+        if (!$bank) {
+            return Tool::jsonResp([
+                'err' => 202,
+                'msg' => '输入的银行卡不正确, 或未收录.'
+            ]);
+        }
+
         if ($bank) {
             $params['bank']           = $bank['bank'];
             $params['bank_name']      = $bank['bankName'];
@@ -103,7 +112,7 @@ class SkbBankCard extends Controller
             ]);
         } else {
             return Tool::jsonResp([
-                'err' => '404',
+                'err' => 404,
                 'msg' => '添加失败',
                 'dat' => $dat
             ]);
