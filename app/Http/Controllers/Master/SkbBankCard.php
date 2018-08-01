@@ -61,7 +61,7 @@ class SkbBankCard extends Controller
             ],
             'bank_card_number' => [
                 'required',
-                'regex:/^(\d{16}|\d{19}|\d{17})$/'
+                'regex:/^(\d{16}|\d{17}|\d{18}|\d{19})$/'
             ],
             'bank_name' => 'required|string',
             'bank_branch_name' => 'required|string',
