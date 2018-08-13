@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Models\{
-    Common\SkbProduct, Orders\SkbOrder as OrderModel, Master\Verify, User
+    Common\SkbProduct,
+    Orders\SkbOrder as OrderModel,
+    Master\Verify
 };
 use App\Traits\Session;
 use App\Traits\Tool;
@@ -28,7 +30,7 @@ class SkbOrder extends Controller
             'uid'          => 'required|numeric',
             'product_info' => 'required|array',
             'end_addr'     => 'required|numeric',
-            'total_price'  => 'required|numeric',
+            'user_price'  => 'required|numeric',
             'appoint_time' => 'required|numeric',
             'service_id'   => 'required|numeric',
 //            'area_id'      => 'required|array'
@@ -69,7 +71,7 @@ class SkbOrder extends Controller
             $price_tmp += $v[$product];
         }
         //检测价格是否正常
-        if ($price_tmp != $res['total_price']) {
+        if ($price_tmp != $res['user_price']) {
             return Tool::jsonR(-3, 'price error', '');
         }
 
@@ -90,62 +92,62 @@ class SkbOrder extends Controller
      * @param Session $ssn
      * @param OrderModel $orders
      * @param Verify $verify
-     * @param User $users
+     * @param SkbProduct $proModel
      * @return $this
      */
-    public function getOrders(Session $ssn, OrderModel $orders, Verify $verify, User $users)
-    {
+    public function getOrders(
+        Session $ssn,
+        OrderModel $orders,
+        Verify $verify,
+        SkbProduct $proModel
+    ){
         $usr   = $ssn->get('user');
         if ($usr['role'] != 2) return Tool::jsonR(-1, '这个操作只有师傅才可以进行', '');
 
-        $verify = $verify->where([
-                            ['mid', $usr['id']],
-                            ['verify_status', 2],
-                            ['is_del', 0],
-                            ['is_work', 1]
+        // 获取师傅工作区域
+        $areas = $verify->getMasterAreas($usr['id']);
+
+        if(!$areas) return Tool::jsonR(-2, 'work_area is fail', null);
+
+        $orders = $orders->select([
+                            'skb_orders.id',
+                            'skb_orders.uid',
+                            'skb_orders.order_number',
+                            'skb_orders.product_info',
+                            'skb_orders.service_id',
+                            'skb_orders.user_price',
+                            'skb_orders.appoint_time',
+                            'skb_orders.end_addr',
+                            'skb_orders.order_remarks',
+                            'skb_orders.master_price',
+                            'user.id as user_id',
+                            'user.username',
+                            'user.nickname',
+                            'user.avatar'
                         ])
-                        ->get();
-
-        if($verify->isEmpty()) return Tool::jsonR(-1, 'user role is fail', null);
-
-        $verify->first();
-        $areas  = json_decode($verify->work_area, true);
-
-        if($areas) return Tool::jsonR(-2, 'work_area is fail', null);
-
-        $orders = $orders->where('order_status', 0)
-                        ->whereIn('end_addr', $areas)
-                        ->get();
+                ->where('order_status', 0)
+//                ->where('appoint_time', '>', time()+7200)
+                ->whereIn('end_addr', $areas)
+                ->leftjoin('skb_users as user', 'skb_orders.uid', '=', 'user.id')
+                ->get();
 
         if($orders->isEmpty()) return Tool::jsonR(1, '没有符合条件的订单', null);
 
-        //获取用户基础信息
-        $userId = $orders->pluck('uid')
-                         ->toArray();
-        $users  = $users->select([
-            'id',
-            'username',
-            'nickname',
-            'avatar'
-        ])
-                        ->where(['is_del', 0])
-                        ->whereIn('id', $userId)
-                        ->get()
-                        ->toArray();
+        //获取产品详情
+        $proInfo  = $orders->pluck('product_info')
+                    ->toArray();
+        $proInfos = $proModel->getProducInfoByOrder($proInfo);
 
-        $userInfo = [];
-        foreach ($users as $user)
-        {
-            $userInfo[$user['id']] = $user;
-            unset($userInfo[$user['id']][0]);
-        }
+        if(!$proInfos) return Tool::jsonR(-3, 'product error', null);
 
-        $orders = $orders->toArray();
+        $orders   = $orders->toArray();
 
-        return Tool::jsonR(0, 'get orderList success', [
-            'orders'    => $orders,
-            'userInfo'  => $userInfo
-        ]);
+        return Tool::jsonR(0,
+            'get orderList success',
+                [
+                    'orders'    => $orders,
+                    'product'   => $proInfos
+                ]);
     }
 
     /**

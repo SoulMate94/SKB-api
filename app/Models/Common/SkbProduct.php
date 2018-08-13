@@ -20,4 +20,34 @@ class SkbProduct extends Model
 
         return $Product;
     }
+
+    public function getProducInfoByOrder($proInfo)
+    {
+        $pIds    = [];
+        foreach ($proInfo as $v)
+        {
+            $proId  = json_decode($v, true);
+            foreach ($proId as $pId)
+            {
+                $pIds[] = $pId['product_id'];
+            }
+        }
+        $pIds = array_unique($pIds);
+        $proInfos = $this->select([
+                            'id',
+                            'product_cate_id',
+                            'product_name',
+                            'product_price',
+                            'product_img',
+                            'install_price',
+                            'uninstall_price'
+                        ])
+                        ->where('is_active', 1)
+                        ->whereIn('id', $pIds)
+                        ->get();
+        if ($proInfos->isEmpty()) false;
+
+        return $proInfos->first()
+                        ->toArray();
+    }
 }
